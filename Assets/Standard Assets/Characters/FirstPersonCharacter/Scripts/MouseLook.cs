@@ -2,8 +2,6 @@ using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-namespace UnityStandardAssets.Characters.FirstPerson
-{
     [Serializable]
     public class MouseLook
     {
@@ -61,7 +59,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if(!lockCursor)
             {//we force unlock the cursor if the user disable the cursor locking helper
                 Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
             }
         }
 
@@ -112,4 +109,3 @@ namespace UnityStandardAssets.Characters.FirstPerson
         }
 
     }
-}
