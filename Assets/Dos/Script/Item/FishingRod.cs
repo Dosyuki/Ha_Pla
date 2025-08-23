@@ -1,8 +1,18 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FishingRod : BaseItem
 {
+    [Header("Fishing Charge")]
+    [SerializeField] private Slider fishingSlider;
+    public float chargeSpeed = 1f; // speed of up/down movement
+
+    private int direction = 1; // 1 = going up, -1 = going down
+    private bool isStopped = false;
+    private bool isCharging = false;
+
+    [Header("Thrown Section")]
     [SerializeField] private float ThrowPower = 10f;
     [SerializeField] private float RecallSpeed = 5f;
     [SerializeField] private bool isThrown;
@@ -33,15 +43,33 @@ public class FishingRod : BaseItem
         lineRenderer.endWidth = 0.01f;
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
+        
+        fishingSlider.minValue = 0;
+        fishingSlider.maxValue = 1;
+        fishingSlider.value = 0;
     }
 
     private void Update()
     {
+        // Start charging when press
         if (Input.GetMouseButtonDown(0) && !isThrown)
         {
-            StartFishing();
+            StartCharging();
         }
 
+        // Keep updating while holding
+        if (Input.GetMouseButton(0) && isCharging)
+        {
+            UpdateCharging();
+        }
+
+        // Release and throw
+        if (Input.GetMouseButtonUp(0) && isCharging)
+        {
+            ReleaseCharge();
+        }
+
+        // Right click recall
         if (Input.GetMouseButtonDown(1) && isThrown)
         {
             StartRecall();
@@ -56,6 +84,100 @@ public class FishingRod : BaseItem
         if (isThrown || isRecalling)
         {
             UpdateLine();
+        }
+    }
+
+    // ----------------- FISHING MINI-GAME -----------------
+
+    private void StartCharging()
+    {
+        fishingSlider.value = 0.2f;   // always restart at 0.2
+        direction = 1;
+        isStopped = false;
+        isCharging = true;
+    }
+
+    private void UpdateCharging()
+    {
+        if (!isStopped)
+        {
+            fishingSlider.value += direction * chargeSpeed * Time.deltaTime;
+
+            // reached top → go down
+            if (direction == 1 && fishingSlider.value >= 1f)
+            {
+                fishingSlider.value = 1f;
+                direction = -1;
+            }
+            // reached bottom → stop completely
+            else if (direction == -1 && fishingSlider.value <= 0f)
+            {
+                fishingSlider.value = 0f;
+                isStopped = true; // stop here until release
+            }
+        }
+    }
+
+    private void ReleaseCharge()
+    {
+        // Example "sweet spots"
+        if (fishingSlider.value >= 0.06 && fishingSlider.value < 0.1f)
+        {
+            StartFishing(1.25f);
+            Debug.Log("Good");
+        }
+        else if (fishingSlider.value >= 0.1f && fishingSlider.value < 0.15f)
+        {
+            StartFishing(1.5f);
+            Debug.Log("Perfect");
+        }
+        else if (fishingSlider.value >= 0.15f && fishingSlider.value < 0.18f)
+        {
+            StartFishing(1.25f);
+            Debug.Log("Good");
+        }
+        else
+        {
+            Debug.Log("Bad");
+        }
+
+        isCharging = false;
+    }
+
+    // ----------------- FISHING ACTIONS -----------------
+
+    private void StartFishing(float multiplier = 1)
+    {
+        isThrown = true;
+        isRecalling = false;
+
+        bait.isKinematic = false;
+        lineRenderer.enabled = true;
+
+        Vector3 throwDirection = (bait.transform.forward + Vector3.up).normalized;
+        bait.AddForce(throwDirection * (ThrowPower * multiplier), ForceMode.Impulse);
+        bait.transform.parent = null;
+    }
+
+    private void StartRecall()
+    {
+        isRecalling = true;
+        bait.isKinematic = true;
+    }
+
+    private void RecallBaitLerp()
+    {
+        float step = RecallSpeed * Time.deltaTime;
+        baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
+
+        if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
+        {
+            isRecalling = false;
+            isThrown = false;
+            lineRenderer.enabled = false;
+
+            bait.transform.parent = rodTip.transform;
+            bait.transform.rotation = rodTip.rotation;
         }
     }
 
@@ -88,40 +210,7 @@ public class FishingRod : BaseItem
         }
     }
 
-    private void StartFishing()
-    {
-        isThrown = true;
-        isRecalling = false;
-
-        bait.isKinematic = false;
-        lineRenderer.enabled = true;
-
-        Vector3 throwDirection = (bait.transform.forward + Vector3.up).normalized;
-        bait.AddForce(throwDirection * ThrowPower, ForceMode.Impulse);
-        bait.transform.parent = null;
-    }
-
-    private void StartRecall()
-    {
-        isRecalling = true;
-        bait.isKinematic = true;
-    }
-
-    private void RecallBaitLerp()
-    {
-        float step = RecallSpeed * Time.deltaTime;
-        baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
-
-        if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
-        {
-            isRecalling = false;
-            isThrown = false;
-            lineRenderer.enabled = false;
-
-            bait.transform.parent = rodTip.transform;
-        }
-    }
-
+    // ----------------- GETTERS -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
 }
