@@ -23,6 +23,8 @@ public class FishingRod : BaseItem
     [SerializeField] private Transform baitTransform;
     [SerializeField] private Transform rodTip;
 
+    [SerializeField] private GameObject MinigameUI;
+
     private Rigidbody bait;
     private LineRenderer lineRenderer;
     private bool isRecalling = false;
@@ -186,6 +188,9 @@ public class FishingRod : BaseItem
         if (Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length != 0)
         {
             bait.isKinematic = true;
+            MinigameUI.SetActive(true);
+            
+            playerController.enabled = false;
             Debug.Log("Start Playing Minigame");
         }
     }
@@ -213,4 +218,13 @@ public class FishingRod : BaseItem
     // ----------------- GETTERS -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
+
+    public void BeginRecall()
+    {
+        isRecalling = true;
+        MinigameUI.SetActive(false);
+        playerController.enabled = true;
+        bait.isKinematic = true;
+        Instantiate(FishManager.Instance.fishPrefabs[0],baitTransform.position, Quaternion.identity,baitTransform);
+    }
 }
