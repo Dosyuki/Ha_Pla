@@ -19,14 +19,17 @@ public class FishingRod : BaseItem
     [SerializeField] private LayerMask FishingLayer;
     [SerializeField] private FirstPersonController playerController;
     [SerializeField] private MouseLook mouseLook;
+    [SerializeField] public Fish currentFish;
 
     [SerializeField] private Transform baitTransform;
     [SerializeField] private Transform rodTip;
 
     [SerializeField] private GameObject MinigameUI;
+    
 
     private Rigidbody bait;
     private LineRenderer lineRenderer;
+    private FishCollectUI fishCollectUI;
     private bool isRecalling = false;
 
     private void Start()
@@ -37,6 +40,7 @@ public class FishingRod : BaseItem
 
         playerController = FindObjectOfType<FirstPersonController>();
         mouseLook = playerController.GetMouseLook();
+        fishCollectUI = FindObjectOfType<FishCollectUI>(true);
 
         lineRenderer = bait.GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -180,6 +184,12 @@ public class FishingRod : BaseItem
 
             bait.transform.parent = rodTip.transform;
             bait.transform.rotation = rodTip.rotation;
+            foreach (Transform child in baitTransform)
+            {
+                Destroy(child.gameObject);
+            }
+            if(currentFish != null)
+                fishCollectUI.UpdateFish(currentFish);
         }
     }
 
@@ -189,6 +199,7 @@ public class FishingRod : BaseItem
         {
             bait.isKinematic = true;
             MinigameUI.SetActive(true);
+            MinigameUI.GetComponentInChildren<Minigame>().StartMinigame();
             
             playerController.enabled = false;
             Debug.Log("Start Playing Minigame");
@@ -225,6 +236,17 @@ public class FishingRod : BaseItem
         MinigameUI.SetActive(false);
         playerController.enabled = true;
         bait.isKinematic = true;
-        Instantiate(FishManager.Instance.fishPrefabs[0],baitTransform.position, Quaternion.identity,baitTransform);
+
+        // Example: player has 1.1x luck, 1.2x weight multiplier
+        Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier);
+        currentFish = caughtFish;
+        // Instantiate fish prefab
+        if (caughtFish.PrefabModel != null)
+        {
+            Instantiate(caughtFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
+        }
+
+        Debug.Log($"Caught a {caughtFish.Rarity} {caughtFish.Name} weighing {caughtFish.Weight:F2}kg!");
     }
+
 }

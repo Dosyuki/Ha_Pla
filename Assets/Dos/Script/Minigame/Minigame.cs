@@ -13,6 +13,7 @@ public class Minigame : MonoBehaviour
     [SerializeField] private float baseRotationSpeed = 60f; // base speed
     private float rotationSpeed;
     private float rotationX = 0f;
+    private bool isStart = false;
 
     private Coroutine speedUpRoutine;
 
@@ -44,6 +45,7 @@ public class Minigame : MonoBehaviour
             if (progressBar == 100)
             {
                 Inventory.Instance.CurrentRod.BeginRecall();
+                isStart = false;
                 Debug.Log("you win");
             }
         }
@@ -75,5 +77,15 @@ public class Minigame : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         rotationSpeed = baseRotationSpeed;
         speedUpRoutine = null; // reset flag
+    }
+
+    public void StartMinigame()
+    {
+        if (!isStart)
+        {
+            progressBar = 0;
+            sliderProgress.value = 0;
+            isStart = true;
+        }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Inventory : Singleton<Inventory>
 {
-    [SerializeField] private List<BaseFish> allFish;
+    [SerializeField] private List<Fish> allFish;
     [SerializeField] private FishingRod currentRod;
     public FishingRod CurrentRod => currentRod;
 
@@ -39,5 +39,9 @@ public class Inventory : Singleton<Inventory>
             isEquipRod = !isEquipRod;
         }
     }
-    
+
+    public void AddFish(Fish fish)
+    {
+        allFish.Add(fish);
+    }
 }

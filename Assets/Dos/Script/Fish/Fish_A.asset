@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Fish A
   Description: Hello World This Fish is a Fish
-  Weight: 0
+  Weight: 100
   Rarity: 0
-  DropChance: 0
-  PrefabModel: {fileID: 0}
-  SpriteModel: {fileID: 0}
+  DropChance: 20
+  PrefabModel: {fileID: 919132149155446097, guid: e21c45d7a64e8d140b3303686b48969a, type: 3}
+  SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
