@@ -7,10 +7,12 @@ public class BaseFish : ScriptableObject
     [TextAreaAttribute]
     public string Description;
     public float Weight;
+    public float Value;
     public FishRarity Rarity = FishRarity.Basic;
     public float DropChance;
     public GameObject PrefabModel;
     public Sprite SpriteModel;
+    
 }
 
 public enum FishRarity

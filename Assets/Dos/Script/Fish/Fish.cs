@@ -6,16 +6,21 @@ public class Fish
     public string Name;
     public string Description;
     public float Weight;
+    public float Value;
     public FishRarity Rarity;
     public GameObject PrefabModel;
     public Sprite SpriteModel;
+    
+    [SerializeField] private BaseFish baseFish;
 
     // Constructor builds from BaseFish with multipliers
     public Fish(BaseFish baseFish, float luckMultiplier, float weightMultiplier)
     {
+        this.baseFish = baseFish;
         Name = baseFish.Name;
         Description = baseFish.Description;
         Rarity = baseFish.Rarity;
+        Value = baseFish.Value;
         PrefabModel = baseFish.PrefabModel;
         SpriteModel = baseFish.SpriteModel;
 
@@ -29,5 +34,10 @@ public class Fish
         {
             Rarity += 1; // upgrade rarity by one tier
         }
+    }
+
+    public float CalculateValue()
+    {
+        return Value * (Weight / baseFish.Weight);
     }
 }

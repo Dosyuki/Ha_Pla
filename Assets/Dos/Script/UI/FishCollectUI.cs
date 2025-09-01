@@ -16,17 +16,24 @@ public class FishCollectUI : MonoBehaviour
         fishName.text = fishStats.Name;
         fishWeight.text = fishStats.Weight.ToString();
         fishSprite.sprite = fishStats.SpriteModel;
+        Cursor.visible = true;
     }
 
     public void PickUpFish()
     {
         Inventory.Instance.AddFish(fishStats);
+        Inventory.Instance.CurrentRod.currentFish = null;
+        fishStats = null;
         gameObject.SetActive(false);
+        Cursor.visible = false;
     }
 
     public void DropFish()
     {
         gameObject.SetActive(false);
         Inventory.Instance.CurrentRod.currentFish = null;
+        fishStats = null;
+        Cursor.visible = false;
+        
     }
 }

@@ -44,4 +44,5 @@ public class Inventory : Singleton<Inventory>
     {
         allFish.Add(fish);
     }
+    public List<Fish> GetAllFish() => allFish;
 }

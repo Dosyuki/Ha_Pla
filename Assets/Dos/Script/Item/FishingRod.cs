@@ -195,7 +195,7 @@ public class FishingRod : BaseItem
 
     private void FishingHook()
     {
-        if (Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length != 0)
+        if (Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length != 0 && !isRecalling)
         {
             bait.isKinematic = true;
             MinigameUI.SetActive(true);
