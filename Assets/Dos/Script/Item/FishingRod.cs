@@ -105,7 +105,7 @@ public class FishingRod : BaseItem
 
     private void UpdateCharging()
     {
-        if (!isStopped)
+        if (!isStopped && !fishCollectUI.isOpen)
         {
             fishingSlider.value += direction * chargeSpeed * Time.deltaTime;
 

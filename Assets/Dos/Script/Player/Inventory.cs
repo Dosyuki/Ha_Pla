@@ -6,6 +6,7 @@ public class Inventory : Singleton<Inventory>
 {
     [SerializeField] private List<Fish> allFish;
     [SerializeField] private FishingRod currentRod;
+    [SerializeField] private int maxSlots;
     public FishingRod CurrentRod => currentRod;
 
     [SerializeField]
@@ -42,7 +43,10 @@ public class Inventory : Singleton<Inventory>
 
     public void AddFish(Fish fish)
     {
-        allFish.Add(fish);
+        if(!isMaxFish)
+            allFish.Add(fish);
     }
     public List<Fish> GetAllFish() => allFish;
+    public bool isMaxFish => allFish.Count + 1 > maxSlots;
+    public int GetMaxSlots() => maxSlots;
 }

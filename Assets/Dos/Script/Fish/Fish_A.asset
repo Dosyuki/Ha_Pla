@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Fish A
   Description: Hello World This Fish is a Fish
   Weight: 100
-  Value: 0
+  Value: 100
   Rarity: 0
   DropChance: 20
   PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
