@@ -16,7 +16,7 @@ public class ShipStorage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, Quaternion.identity, playerMask);
+        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, transform.rotation, playerMask);
         if (colliders.Length > 0)
         {
             chestUIGroup.alpha = 1;
@@ -44,6 +44,9 @@ public class ShipStorage : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position, transform.lossyScale * hitboxSize);
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale * hitboxSize);
+        Gizmos.matrix = rotationMatrix;
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+        Gizmos.matrix = Matrix4x4.identity;
     }
 }

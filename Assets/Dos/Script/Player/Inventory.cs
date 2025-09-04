@@ -23,6 +23,7 @@ public class Inventory : Singleton<Inventory>
             if (currentRod != null)
             {
                 currentRod.gameObject.SetActive(value);
+                currentRod.HideSliderCanvas(!value);
             }
         }
     }
@@ -47,6 +48,11 @@ public class Inventory : Singleton<Inventory>
     {
         if(!isMaxFish)
             allFish.Add(fish);
+    }
+
+    public void RemoveFish(Fish fish)
+    {
+        allFish.Remove(fish);
     }
 
     public void UpgradeTier()

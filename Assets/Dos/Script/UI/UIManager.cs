@@ -20,16 +20,19 @@ public class UIManager : Singleton<UIManager>
                 m_currentState = newState;
                 m_FirstPersonController.SetCanMove(true);
                 m_FirstPersonController.GetMouseLook().SetCursorLock(true);
+                Inventory.Instance.CurrentRod.HideSliderCanvas(false);
                 break;
             case currentState.UI:
                 m_currentState = newState;
                 m_FirstPersonController.SetCanMove(false);
                 m_FirstPersonController.GetMouseLook().SetCursorLock(false);
+                Inventory.Instance.CurrentRod.HideSliderCanvas(true);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 break;
         }
     }
+    public currentState GetCurrentState() => m_currentState;
 }
 
 public enum currentState

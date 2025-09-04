@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ShopManager : Singleton<ShopManager>
@@ -13,6 +14,10 @@ public class ShopManager : Singleton<ShopManager>
     [SerializeField] private List<Fish> selectedFish = new List<Fish>();
     [SerializeField] private bool isOpen = false;
 
+    [SerializeField] CanvasGroup shopUICanvasGroup;
+    [SerializeField] private TMP_Text valueText;
+    private float currentSelectedValue;
+
     private void Start()
     {
         shopUIGroup = transform.GetComponentInChildren<CanvasGroup>();
@@ -21,7 +26,7 @@ public class ShopManager : Singleton<ShopManager>
 
     private void Update()
     {
-        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, Quaternion.identity, playerMask);
+        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, transform.rotation, playerMask);
         if (colliders.Length > 0)
         {
             shopUIGroup.alpha = 1;
@@ -31,6 +36,7 @@ public class ShopManager : Singleton<ShopManager>
                 {
                     isOpen = true;
                     InventoryUI.Instance.CreateCardUI(false);
+                    OpenShopUI();
                     return;
                     // DO NOT call UIManager.ChangeState here
                 }
@@ -39,6 +45,7 @@ public class ShopManager : Singleton<ShopManager>
             {
                 isOpen = false;
                 InventoryUI.Instance.CloseCardUI(InventorySource.Shop);
+                CloseShopUI();
                 selectedFish.Clear();
             }
         }
@@ -48,16 +55,58 @@ public class ShopManager : Singleton<ShopManager>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position, transform.lossyScale * hitboxSize);
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale * hitboxSize);
+        Gizmos.matrix = rotationMatrix;
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+        Gizmos.matrix = Matrix4x4.identity;
     }
     public void AddSelectedFish(Fish fish)
     {
         selectedFish.Add(fish);
+        CalculateAllValue();
     }
 
     public void RemoveSelectedFish(Fish fish)
     {
         selectedFish.Remove(fish);
+        CalculateAllValue();
+    }
+
+    public void CalculateAllValue()
+    {
+        float _value = 0;
+        if(selectedFish.Count > 0)
+            foreach (Fish fish in selectedFish)
+                _value +=  fish.CalculateValue();
+        currentSelectedValue = _value;
+        valueText.text = $"{currentSelectedValue} Fishllars";
+    }
+
+    public void OpenShopUI()
+    {
+        shopUICanvasGroup.interactable = true;
+        shopUICanvasGroup.alpha = 1;
+        shopUICanvasGroup.blocksRaycasts = true;
+    }
+
+    public void CloseShopUI()
+    {
+        shopUICanvasGroup.interactable = false;
+        shopUICanvasGroup.alpha = 0;
+        shopUICanvasGroup.blocksRaycasts = false;
+    }
+
+    public void ConfirmSell()
+    {
+        PlayerStats.Instance.AddMoney(currentSelectedValue);
+        foreach (Fish fish in selectedFish)
+        {
+            Inventory.Instance.RemoveFish(fish);
+        }
+        InventoryUI.Instance.CloseCardUI(InventorySource.Shop);
+        InventoryUI.Instance.CreateCardUI(false);
+        selectedFish.Clear();
+        CalculateAllValue();
     }
     public bool GetIsOpen() => isOpen;
     

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class FishingRod : BaseItem
 {
@@ -25,6 +27,7 @@ public class FishingRod : BaseItem
     [SerializeField] private Transform rodTip;
 
     [SerializeField] private GameObject MinigameUI;
+    [SerializeField] private CanvasGroup sliderCanvasGroup;
     
 
     private Rigidbody bait;
@@ -58,6 +61,8 @@ public class FishingRod : BaseItem
     private void Update()
     {
         // Start charging when press
+        if(UIManager.Instance.GetCurrentState() == currentState.UI)
+            return;
         if (Input.GetMouseButtonDown(0) && !isThrown)
         {
             StartCharging();
@@ -197,15 +202,21 @@ public class FishingRod : BaseItem
     {
         if (Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length != 0 && !isRecalling)
         {
-            bait.isKinematic = true;
-            MinigameUI.SetActive(true);
-            MinigameUI.GetComponentInChildren<Minigame>().StartMinigame();
-            
-            playerController.enabled = false;
-            Debug.Log("Start Playing Minigame");
+            StartCoroutine(WaitForFish());
         }
     }
 
+    IEnumerator WaitForFish()
+    {
+        float random = Random.Range(1f, 2f);
+        yield return new WaitForSeconds(random);
+        bait.isKinematic = true;
+        MinigameUI.SetActive(true);
+        MinigameUI.GetComponentInChildren<Minigame>().StartMinigame();
+            
+        playerController.enabled = false;
+        Debug.Log("Start Playing Minigame");
+    }
     private void UpdateLine()
     {
         int segmentCount = lineRenderer.positionCount;
@@ -229,6 +240,7 @@ public class FishingRod : BaseItem
     // ----------------- GETTERS -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
+    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide  ? 0 : 1;
 
     public void BeginRecall()
     {
@@ -236,7 +248,7 @@ public class FishingRod : BaseItem
         MinigameUI.SetActive(false);
         playerController.enabled = true;
         bait.isKinematic = true;
-
+        HideSliderCanvas(true);
         // Example: player has 1.1x luck, 1.2x weight multiplier
         Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier);
         currentFish = caughtFish;
