@@ -45,6 +45,7 @@ public class Minigame : MonoBehaviour
             if (progressBar == 100)
             {
                 Inventory.Instance.CurrentRod.BeginRecall();
+                UIManager.Instance.ChangeState(currentState.None);
                 isStart = false;
                 Debug.Log("you win");
             }
@@ -83,6 +84,7 @@ public class Minigame : MonoBehaviour
     {
         if (!isStart)
         {
+            UIManager.Instance.ChangeState(currentState.UI);
             progressBar = 0;
             sliderProgress.value = 0;
             isStart = true;

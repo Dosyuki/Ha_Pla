@@ -44,6 +44,13 @@ public class FirstPersonController : MonoBehaviour
     private float m_NextStep;
     private bool m_Jumping;
     private AudioSource m_AudioSource;
+    
+    private bool canMove = true;
+
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
+    }
     // Use this for initialization
     private void Start()
     {
@@ -63,6 +70,9 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (!canMove)
+            return;
+        
         RotateView();
         // the jump state needs to read here to make sure it is not missed
         if (!m_Jump)
@@ -97,6 +107,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!canMove)
+            return;
+        
         float speed;
         GetInput(out speed);
         // always move along the camera forward as it is the direction that it being aimed at

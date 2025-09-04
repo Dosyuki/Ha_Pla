@@ -15,7 +15,7 @@ public class FishCollectUI : MonoBehaviour
         isOpen = true;
         fishStats = fish;
         gameObject.SetActive(true);
-        
+        UIManager.Instance.ChangeState(currentState.UI);
         fishName.text = fishStats.Name;
         fishWeight.text = fishStats.Weight.ToString();
         fishSprite.sprite = fishStats.SpriteModel;
@@ -34,7 +34,7 @@ public class FishCollectUI : MonoBehaviour
         Inventory.Instance.CurrentRod.currentFish = null;
         fishStats = null;
         gameObject.SetActive(false);
-        Cursor.visible = false;
+        UIManager.Instance.ChangeState(currentState.None);
     }
 
     public void DropFish()
@@ -43,7 +43,6 @@ public class FishCollectUI : MonoBehaviour
         gameObject.SetActive(false);
         Inventory.Instance.CurrentRod.currentFish = null;
         fishStats = null;
-        Cursor.visible = false;
-        
+        UIManager.Instance.ChangeState(currentState.None);
     }
 }

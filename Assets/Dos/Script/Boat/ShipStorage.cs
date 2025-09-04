@@ -16,20 +16,29 @@ public class ShipStorage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        colliders = Physics.OverlapBox(transform.position, transform.lossyScale / 2f, Quaternion.identity, playerMask);
+        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, Quaternion.identity, playerMask);
         if (colliders.Length > 0)
         {
             chestUIGroup.alpha = 1;
             if (Input.GetKeyDown(KeyCode.F))
-                InventoryUI.Instance.CreateCardUI();
+            {
+                InventoryUI.Instance.CreateCardUI(true);
+                return;
+            }
+            else if (Input.GetKeyDown((KeyCode.R)) && PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
+            {
+                Inventory.Instance.UpgradeTier();
+                InventoryUI.Instance.UpdateText();
+                PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
+            }
+            else if (InventoryUI.Instance.gameObject.activeInHierarchy && (Input.GetKeyDown(KeyCode.F) 
+                                                                           || Input.GetKeyDown(KeyCode.Escape)))
+            {
+                InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+            }
         }
-        else if (colliders.Length == 0 ||
-                 (InventoryUI.Instance.gameObject.activeInHierarchy && Input.GetKeyDown(KeyCode.F)))
-        {
-            InventoryUI.Instance.CloseCardUI();
+        else if(colliders.Length == 0)
             chestUIGroup.alpha = 0;
-        }
-        
     }
 
     private void OnDrawGizmos()
