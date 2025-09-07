@@ -63,9 +63,10 @@ public class FishingRod : BaseItem
         // Start charging when press
         if(UIManager.Instance.GetCurrentState() == currentState.UI)
             return;
-        if (Input.GetMouseButtonDown(0) && !isThrown)
+        if (Input.GetMouseButtonDown(0) && !isThrown && Inventory.Instance.currentBait.amount > 0)
         {
             StartCharging();
+            Inventory.Instance.currentBait.amount--;
         }
 
         // Keep updating while holding
@@ -250,7 +251,7 @@ public class FishingRod : BaseItem
         bait.isKinematic = true;
         HideSliderCanvas(true);
         // Example: player has 1.1x luck, 1.2x weight multiplier
-        Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier);
+        Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,Inventory.Instance.currentBait);
         currentFish = caughtFish;
         // Instantiate fish prefab
         if (caughtFish.PrefabModel != null)

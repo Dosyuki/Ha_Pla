@@ -5,12 +5,13 @@ using UnityEngine;
 public class Inventory : Singleton<Inventory>
 {
     [SerializeField] private List<Fish> allFish;
+    [SerializeField] private List<Bait> allBait = new List<Bait>();
     [SerializeField] private FishingRod currentRod;
+    [SerializeField] public Bait currentBait;
     [SerializeField] private int maxSlots;
     public FishingRod CurrentRod => currentRod;
 
-    [SerializeField]
-    private bool _isEquipRod; // backing field
+    [SerializeField] private bool _isEquipRod; // backing field
 
     private int currentUpgradeTier = 1;
 
@@ -46,7 +47,7 @@ public class Inventory : Singleton<Inventory>
 
     public void AddFish(Fish fish)
     {
-        if(!isMaxFish)
+        if (!isMaxFish)
             allFish.Add(fish);
     }
 
@@ -60,7 +61,27 @@ public class Inventory : Singleton<Inventory>
         currentUpgradeTier++;
         maxSlots = 5 + (currentUpgradeTier * 5);
     }
-    public List<Fish> GetAllFish() => allFish;
+
+    public void AddBait(BaseBait baseBait, int amount = 1)
+    {
+        Bait existing = allBait.Find(b => b.Name == baseBait.Name);
+
+        if (existing == null)
+        {
+            // Create a new entry
+            Bait newBait = new Bait(baseBait, amount);
+            allBait.Add(newBait);
+        }
+        else
+        {
+            // Add to existing
+            existing.amount += amount;
+        }
+        currentBait = existing;
+    }
+
+
+public List<Fish> GetAllFish() => allFish;
     public bool isMaxFish => allFish.Count + 1 > maxSlots;
     public int GetMaxSlots() => maxSlots;
     public int UpgradeCost() => (int)((currentUpgradeTier * 1.5f) * 100);

@@ -17,7 +17,8 @@ public class ShopManager : Singleton<ShopManager>
     [SerializeField] CanvasGroup shopUICanvasGroup;
     [SerializeField] private TMP_Text valueText;
     private float currentSelectedValue;
-
+    
+    [SerializeField] private List<BaseBait> baits = new List<BaseBait>();
     private void Start()
     {
         shopUIGroup = transform.GetComponentInChildren<CanvasGroup>();
@@ -87,6 +88,7 @@ public class ShopManager : Singleton<ShopManager>
         shopUICanvasGroup.interactable = true;
         shopUICanvasGroup.alpha = 1;
         shopUICanvasGroup.blocksRaycasts = true;
+        shopUICanvasGroup.GetComponent<ShopUI>().OpenShop(baits);
     }
 
     public void CloseShopUI()
@@ -94,6 +96,8 @@ public class ShopManager : Singleton<ShopManager>
         shopUICanvasGroup.interactable = false;
         shopUICanvasGroup.alpha = 0;
         shopUICanvasGroup.blocksRaycasts = false;
+        shopUICanvasGroup.GetComponent<ShopUI>().CloseShop();
+        
     }
 
     public void ConfirmSell()
