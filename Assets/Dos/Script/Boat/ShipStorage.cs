@@ -31,7 +31,7 @@ public class ShipStorage : MonoBehaviour
                 InventoryUI.Instance.UpdateText();
                 PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
             }
-            else if (InventoryUI.Instance.gameObject.activeInHierarchy && (Input.GetKeyDown(KeyCode.F) 
+            if (InventoryUI.Instance.gameObject.activeInHierarchy && (Input.GetKeyDown(KeyCode.F) 
                                                                            || Input.GetKeyDown(KeyCode.Escape)))
             {
                 InventoryUI.Instance.CloseCardUI(InventorySource.Ship);

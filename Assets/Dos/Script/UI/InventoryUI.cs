@@ -10,6 +10,7 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private GameObject fishCardPrefab;
     [SerializeField] private Transform fishCardHolder;
     [SerializeField] private TMP_Text maxslotText;
+    [SerializeField] private TMP_Text moneyText;
 
     
     private CanvasGroup canvasGroup;
@@ -70,6 +71,7 @@ public class InventoryUI : Singleton<InventoryUI>
     public void UpdateText()
     {
         maxslotText.text = $"{allFish.Count} / {Inventory.Instance.GetMaxSlots()}";
+        moneyText.text = $"{PlayerStats.Instance.GetMoney()} Fishllar";
     }
 }
 public enum InventorySource

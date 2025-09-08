@@ -343,8 +343,8 @@ MonoBehaviour:
   playerPullSpeed: 95
   targetReachThreshold: 10
   pathTimeout: 6
-  boostMultiplier: 2.5
-  boostDuration: 1.25
+  boostMultiplier: 6
+  boostDuration: 0.5
   maxProgress: 50
   progress: 0
   progressText: {fileID: 7814578620751902561}

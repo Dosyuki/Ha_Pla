@@ -18,5 +18,5 @@ MonoBehaviour:
   Value: 100
   Rarity: 0
   DropChance: 20
-  PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
+  PrefabModel: {fileID: 7153456871450641399, guid: 777f4546c4aba594eb4e5673c1bc5a4f, type: 3}
   SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
