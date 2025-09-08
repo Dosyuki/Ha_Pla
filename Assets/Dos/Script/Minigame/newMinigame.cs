@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class newMinigame : MonoBehaviour
@@ -19,8 +20,9 @@ public class newMinigame : MonoBehaviour
     [SerializeField] private float boostMultiplier = 2f; // boost speed multiplier
     [SerializeField] private float boostDuration = 1f;   // how long the boost lasts
 
-    [Header("Score")] 
+    [Header("Score")] [SerializeField] private float maxProgress;
     [SerializeField] private float progress;
+    [SerializeField] private TMP_Text progressText;
 
     private RectTransform currentFish;
     private Vector2 fishTarget;
@@ -34,6 +36,7 @@ public class newMinigame : MonoBehaviour
         SpawnFish();
         PickNewTarget(); // set first target
         UIManager.Instance.ChangeState(currentState.UI);
+        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
     }
 
     private void Update()
@@ -74,8 +77,14 @@ public class newMinigame : MonoBehaviour
         {
             progress += Time.deltaTime * 5f;
         }
+        else if (!CircleOverlap(currentFish, checkRect))
+        {
+            progress -= Time.deltaTime * 4f;
+        }
+        progress = Mathf.Clamp(progress,0f,50f);
+        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
 
-        if (progress >= 50f)
+        if (progress >= maxProgress)
         {
             Inventory.Instance.CurrentRod.BeginRecall();
             UIManager.Instance.ChangeState(currentState.None);
