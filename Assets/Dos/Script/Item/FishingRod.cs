@@ -26,7 +26,7 @@ public class FishingRod : BaseItem
     [SerializeField] private Transform baitTransform;
     [SerializeField] private Transform rodTip;
 
-    [SerializeField] private GameObject MinigameUI;
+    [SerializeField] private GameObject newMinigame;
     [SerializeField] private CanvasGroup sliderCanvasGroup;
     
 
@@ -34,6 +34,7 @@ public class FishingRod : BaseItem
     private LineRenderer lineRenderer;
     private FishCollectUI fishCollectUI;
     private bool isRecalling = false;
+    private GameObject minigame;
 
     private void Start()
     {
@@ -212,8 +213,8 @@ public class FishingRod : BaseItem
         float random = Random.Range(1f, 2f);
         yield return new WaitForSeconds(random);
         bait.isKinematic = true;
-        MinigameUI.SetActive(true);
-        MinigameUI.GetComponentInChildren<Minigame>().StartMinigame();
+        if(minigame == null)
+            minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
             
         playerController.enabled = false;
         Debug.Log("Start Playing Minigame");
@@ -246,7 +247,7 @@ public class FishingRod : BaseItem
     public void BeginRecall()
     {
         isRecalling = true;
-        MinigameUI.SetActive(false);
+        Destroy(minigame);
         playerController.enabled = true;
         bait.isKinematic = true;
         HideSliderCanvas(true);

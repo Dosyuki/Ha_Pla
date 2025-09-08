@@ -5017,6 +5017,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1139284699}
     - target: {fileID: 5430419801769367239, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
+      propertyPath: newMinigame
+      value: 
+      objectReference: {fileID: 6270459246956381944, guid: e6121be83fdc912448d2e0f12c3d401d, type: 3}
+    - target: {fileID: 5430419801769367239, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
       propertyPath: baitTransform
       value: 
       objectReference: {fileID: 1397957032}
