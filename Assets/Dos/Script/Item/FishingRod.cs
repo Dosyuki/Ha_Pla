@@ -182,12 +182,14 @@ public class FishingRod : BaseItem
     {
         float step = RecallSpeed * Time.deltaTime;
         baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
+        rodTip.gameObject.SetActive(false);
 
         if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
         {
             isRecalling = false;
             isThrown = false;
             lineRenderer.enabled = false;
+            rodTip.gameObject.SetActive(true);
 
             bait.transform.parent = rodTip.transform;
             bait.transform.rotation = rodTip.rotation;
