@@ -197,7 +197,7 @@ public class FishingRod : BaseItem
             {
                 Destroy(child.gameObject);
             }
-            if(currentFish != null)
+            if(currentFish.PrefabModel != null)
                 fishCollectUI.UpdateFish(currentFish);
         }
     }
