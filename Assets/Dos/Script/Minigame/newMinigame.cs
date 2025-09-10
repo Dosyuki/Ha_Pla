@@ -22,6 +22,7 @@ public class newMinigame : MonoBehaviour
 
     [Header("Score")] [SerializeField] private float maxProgress;
     [SerializeField] private float progress;
+    [SerializeField] private float progressRate;
     [SerializeField] private TMP_Text progressText;
 
     private RectTransform currentFish;
@@ -75,7 +76,7 @@ public class newMinigame : MonoBehaviour
         // Score when fish overlaps checkRect
         if (CircleOverlap(currentFish, checkRect))
         {
-            progress += Time.deltaTime * 5f;
+            progress += Time.deltaTime * progressRate;
         }
         else if (!CircleOverlap(currentFish, checkRect))
         {

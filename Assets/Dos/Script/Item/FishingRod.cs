@@ -240,12 +240,6 @@ public class FishingRod : BaseItem
             lineRenderer.SetPosition(i, point);
         }
     }
-
-    // ----------------- GETTERS -----------------
-    public bool getIsThrown() => isThrown;
-    public LayerMask getFishingLayer() => FishingLayer;
-    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide  ? 0 : 1;
-
     public void BeginRecall()
     {
         isRecalling = true;
@@ -264,5 +258,11 @@ public class FishingRod : BaseItem
 
         Debug.Log($"Caught a {caughtFish.Rarity} {caughtFish.Name} weighing {caughtFish.Weight:F2}kg!");
     }
+
+    // ----------------- GETTERS -----------------
+    public bool getIsThrown() => isThrown;
+    public LayerMask getFishingLayer() => FishingLayer;
+    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide  ? 0 : 1;
+
 
 }

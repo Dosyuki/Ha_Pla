@@ -5,7 +5,6 @@ public class FishManager : Singleton<FishManager>
 {
     public List<BaseFish> fishPrefabsRedZone;
 
-    // Example random selection with drop chance
     public Fish RandomFish(float luckMultiplier = 1f, float weightMultiplier = 1f, Bait bait = null)
     {
         float totalChance = 0f;
@@ -22,12 +21,10 @@ public class FishManager : Singleton<FishManager>
             cumulative += fish.DropChance;
             if (roll <= cumulative)
             {
-                // return new Fish instance with rolled stats
                 return new Fish(fish, luckMultiplier, weightMultiplier,bait);
             }
         }
 
-        // fallback (shouldn’t happen)
         return new Fish(fishPrefabsRedZone[0], luckMultiplier, weightMultiplier,bait);
     }
 }

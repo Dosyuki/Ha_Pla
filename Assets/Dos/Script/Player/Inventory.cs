@@ -33,7 +33,7 @@ public class Inventory : Singleton<Inventory>
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        maxSlots = 5 + (currentUpgradeTier * 5);
+        maxSlots = 20 + (currentUpgradeTier * 10);
     }
 
     // Update is called once per frame
@@ -59,7 +59,7 @@ public class Inventory : Singleton<Inventory>
     public void UpgradeTier()
     {
         currentUpgradeTier++;
-        maxSlots = 5 + (currentUpgradeTier * 5);
+        maxSlots = 20 + (currentUpgradeTier * 10);
     }
 
     public void AddBait(BaseBait baseBait, int amount = 1)

@@ -7,6 +7,7 @@ public class ShopManager : Singleton<ShopManager>
 {
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private float hitboxSize;
+    [SerializeField] private Vector3 offset;
     
     private Collider[] colliders;
     private CanvasGroup shopUIGroup;
@@ -27,7 +28,7 @@ public class ShopManager : Singleton<ShopManager>
 
     private void Update()
     {
-        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, transform.rotation, playerMask);
+        colliders = Physics.OverlapBox(transform.position + offset, (transform.lossyScale / 2f) * hitboxSize, transform.rotation, playerMask);
         if (colliders.Length > 0)
         {
             shopUIGroup.alpha = 1;
@@ -56,7 +57,7 @@ public class ShopManager : Singleton<ShopManager>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale * hitboxSize);
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position + offset, transform.rotation, transform.lossyScale * hitboxSize);
         Gizmos.matrix = rotationMatrix;
         Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
         Gizmos.matrix = Matrix4x4.identity;

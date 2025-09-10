@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public  class BaseItem :  MonoBehaviour
+public abstract class BaseItem :  MonoBehaviour
 {
     public string Name;
     [TextAreaAttribute]

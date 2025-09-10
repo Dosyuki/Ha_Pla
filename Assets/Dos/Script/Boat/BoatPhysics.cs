@@ -4,8 +4,8 @@ using UnityEngine;
 public class BoatPhysics : MonoBehaviour
 {
     [Header("Boat Movement")]
-    [SerializeField] private float moveSpeed = 15f;     // Forward/Backward speed
-    [SerializeField] private float turnSpeed = 1f;     // Turning speed
+    [SerializeField] private float moveSpeed = 15f; 
+    [SerializeField] private float turnSpeed = 1f; 
     
     
     [SerializeField] private float angularDragWater = 2f;
@@ -19,9 +19,9 @@ public class BoatPhysics : MonoBehaviour
     private Collider[] hitColliders;
 
     [Header("Other Settings")]
-    [SerializeField] private Camera boatCamera;    // assign in Inspector
+    [SerializeField] private Camera boatCamera;
     [SerializeField] private FirstPersonController playerController;
-    [SerializeField] private GameObject playerModel; // so you can hide/show player
+    [SerializeField] private GameObject playerModel;
     [SerializeField] private Transform exitPoint;
     
     private Rigidbody rb;
@@ -31,8 +31,9 @@ public class BoatPhysics : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = true;         // still falls normally
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; 
+        rb.useGravity = true;     
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.isKinematic = true;  
     }
 
     private void Update()
@@ -58,12 +59,10 @@ public class BoatPhysics : MonoBehaviour
     {
         inBoat = true;
         canMove = true;
-
-        // Disable player controller and hide body
+        rb.isKinematic = false;
         playerController.SetCanMove(false);
         playerModel.SetActive(false);
 
-        // Switch cameras
         playerController.GetComponentInChildren<Camera>().enabled = false;
         playerController.GetComponentInChildren<AudioListener>().enabled = false;
         boatCamera.enabled = true;
@@ -74,16 +73,13 @@ public class BoatPhysics : MonoBehaviour
     {
         inBoat = false;
         canMove = false;
-
-        // Place player at exit point
+        rb.isKinematic = true;
         playerController.transform.position = exitPoint.position;
         playerController.transform.rotation = exitPoint.rotation;
 
-        // Enable movement + show player
         playerController.SetCanMove(true);
         playerModel.SetActive(true);
 
-        // Switch cameras
         boatCamera.enabled = false;
         GetComponentInChildren<AudioListener>().enabled = false;
         
@@ -100,10 +96,9 @@ public class BoatPhysics : MonoBehaviour
 
     private void HandleMovement()
     {
-        float moveInput = Input.GetAxis("Vertical");   // W/S
-        float turnInput = Input.GetAxis("Horizontal"); // A/D
+        float moveInput = Input.GetAxis("Vertical"); 
+        float turnInput = Input.GetAxis("Horizontal");
 
-        // Forward/backward
         rb.AddForce(transform.right * moveInput * moveSpeed, ForceMode.Force);
 
         if (Mathf.Abs(moveInput) > 0.01f)

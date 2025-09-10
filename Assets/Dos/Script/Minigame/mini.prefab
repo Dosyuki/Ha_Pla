@@ -336,8 +336,8 @@ MonoBehaviour:
   AreaRect: {fileID: 3190974356461342430}
   checkRect: {fileID: 7572782890108770157}
   fishPrefab: {fileID: 6614611733028211176, guid: dae673967f5a07846b7ab96bfc2d2efc, type: 3}
-  offsetRadiusAreaRect: -46
-  offsetRadiusCheckRect: -25
+  offsetRadiusAreaRect: -14
+  offsetRadiusCheckRect: -8
   offsetRadiusFishRect: -15
   aiSpeed: 45
   playerPullSpeed: 95
@@ -347,4 +347,5 @@ MonoBehaviour:
   boostDuration: 0.5
   maxProgress: 50
   progress: 0
+  progressRate: 10
   progressText: {fileID: 7814578620751902561}
