@@ -17,7 +17,7 @@ public class FishCollectUI : MonoBehaviour
         gameObject.SetActive(true);
         UIManager.Instance.ChangeState(currentState.UI);
         fishName.text = fishStats.Name;
-        fishWeight.text = fishStats.Weight.ToString();
+        fishWeight.text = $"{fishStats.Weight} KGs";
         fishSprite.sprite = fishStats.SpriteModel;
         Cursor.visible = true;
     }

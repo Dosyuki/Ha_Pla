@@ -22,9 +22,12 @@ public class newMinigame : MonoBehaviour
 
     [Header("Score")] [SerializeField] private float maxProgress;
     [SerializeField] private float progress;
-    [SerializeField] private float progressRate;
     [SerializeField] private TMP_Text progressText;
-
+    
+    [Header("ProgressRate")]
+    [SerializeField] private float progressRateIncrease;
+    [SerializeField] private float progressRateDecrease;
+    
     private RectTransform currentFish;
     private Vector2 fishTarget;
 
@@ -76,11 +79,11 @@ public class newMinigame : MonoBehaviour
         // Score when fish overlaps checkRect
         if (CircleOverlap(currentFish, checkRect))
         {
-            progress += Time.deltaTime * progressRate;
+            progress += Time.deltaTime * progressRateIncrease;
         }
         else if (!CircleOverlap(currentFish, checkRect))
         {
-            progress -= Time.deltaTime * 4f;
+            progress -= Time.deltaTime * progressRateDecrease;
         }
         progress = Mathf.Clamp(progress,0f,50f);
         progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
@@ -197,5 +200,14 @@ public class newMinigame : MonoBehaviour
             return rect.rect.width * 0.5f * rect.lossyScale.x + offsetRadiusFishRect;
 
         return rect.rect.width * 0.5f * rect.lossyScale.x; // fallback
+    }
+
+    public void AssignFish(Fish fish)
+    {
+        aiSpeed = 40 * fish.AISpeed;
+        boostMultiplier = fish.DashMultiplier;
+        boostDuration = fish.DashDuration;
+        progressRateIncrease =  fish.ProgressRateIncrease;
+        progressRateDecrease =  fish.ProgressRateDecrease;
     }
 }

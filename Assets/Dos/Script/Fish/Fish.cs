@@ -10,6 +10,11 @@ public class Fish
     public FishRarity Rarity;
     public GameObject PrefabModel;
     public Sprite SpriteModel;
+    public float AISpeed;
+    public float DashMultiplier;
+    public float DashDuration;
+    public float ProgressRateIncrease;
+    public float ProgressRateDecrease;
     
     [SerializeField] private BaseFish baseFish;
 
@@ -22,6 +27,11 @@ public class Fish
         Value = baseFish.Value;
         PrefabModel = baseFish.PrefabModel;
         SpriteModel = baseFish.SpriteModel;
+        AISpeed = baseFish.AISpeed;
+        DashMultiplier = baseFish.DashMultiplier;
+        DashDuration = baseFish.DashDuration;
+        ProgressRateIncrease = baseFish.ProgressRateIncrease;
+        ProgressRateDecrease = baseFish.ProgressRateDecrease;
 
         float minWeight = baseFish.Weight * 0.8f * weightMultiplier * bait.WeightMultiplier;
         float maxWeight = baseFish.Weight * 1.2f * weightMultiplier * bait.WeightMultiplier;

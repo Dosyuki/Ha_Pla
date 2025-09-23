@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: CapiFish
   Description: Hello World This Fish is a Fish
-  Weight: 100
-  Value: 100
+  Weight: 2
+  Value: 10
   Rarity: 0
   DropChance: 20
   PrefabModel: {fileID: 7793142124088762346, guid: 17737588fc0442a42a06e459a54e515c, type: 3}
   SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
+  AISpeed: 1
+  DashMultiplier: 2
+  DashDuration: 1.5
+  ProgressRateIncrease: 8
+  ProgressRateDecrease: 6

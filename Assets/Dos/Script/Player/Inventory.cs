@@ -58,6 +58,8 @@ public class Inventory : Singleton<Inventory>
 
     public void UpgradeTier()
     {
+        if(PlayerStats.Instance.GetMoney() < Inventory.Instance.UpgradeCost())
+            return;
         currentUpgradeTier++;
         maxSlots = 20 + (currentUpgradeTier * 10);
     }

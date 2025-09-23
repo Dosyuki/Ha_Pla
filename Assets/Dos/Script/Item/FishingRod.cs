@@ -34,6 +34,7 @@ public class FishingRod : BaseItem
     private LineRenderer lineRenderer;
     private FishCollectUI fishCollectUI;
     private bool isRecalling = false;
+    private bool isDoneMinigame = false;
     private GameObject minigame;
 
     private void Start()
@@ -183,6 +184,7 @@ public class FishingRod : BaseItem
         float step = RecallSpeed * Time.deltaTime;
         baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
         rodTip.gameObject.SetActive(false);
+        playerController.enabled = false;
 
         if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
         {
@@ -199,6 +201,8 @@ public class FishingRod : BaseItem
             }
             if(currentFish.PrefabModel != null)
                 fishCollectUI.UpdateFish(currentFish);
+            playerController.enabled = true;
+
         }
     }
 
@@ -215,8 +219,13 @@ public class FishingRod : BaseItem
         float random = Random.Range(1f, 2f);
         yield return new WaitForSeconds(random);
         bait.isKinematic = true;
-        if(minigame == null)
+        if (minigame == null)
+        {
+            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,Inventory.Instance.currentBait);
+            currentFish = caughtFish;
             minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
+            minigame.GetComponent<newMinigame>().AssignFish(currentFish);
+        }
             
         playerController.enabled = false;
         Debug.Log("Start Playing Minigame");
@@ -248,15 +257,14 @@ public class FishingRod : BaseItem
         bait.isKinematic = true;
         HideSliderCanvas(true);
         // Example: player has 1.1x luck, 1.2x weight multiplier
-        Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,Inventory.Instance.currentBait);
-        currentFish = caughtFish;
+        
         // Instantiate fish prefab
-        if (caughtFish.PrefabModel != null)
+        if (currentFish.PrefabModel != null)
         {
-            Instantiate(caughtFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
+            Instantiate(currentFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
         }
 
-        Debug.Log($"Caught a {caughtFish.Rarity} {caughtFish.Name} weighing {caughtFish.Weight:F2}kg!");
+        Debug.Log($"Caught a {currentFish.Rarity} {currentFish.Name} weighing {currentFish.Weight:F2}kg!");
     }
 
     // ----------------- GETTERS -----------------

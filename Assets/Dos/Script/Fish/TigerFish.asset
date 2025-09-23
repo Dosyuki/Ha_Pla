@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: TigerFish
   Description: 
-  Weight: 150
-  Value: 175
+  Weight: 6
+  Value: 25
   Rarity: 1
   DropChance: 20
   PrefabModel: {fileID: 919132149155446097, guid: 765631ba10149ac418f033a5a6aad7d2, type: 3}
   SpriteModel: {fileID: 21300000, guid: 4513d638ddb3e9b4b918289772b84e8f, type: 3}
+  AISpeed: 1.2
+  DashMultiplier: 2.2
+  DashDuration: 1.5
+  ProgressRateIncrease: 9
+  ProgressRateDecrease: 7

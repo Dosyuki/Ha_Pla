@@ -30,6 +30,8 @@ public class ShopCardUI : MonoBehaviour
 
     public void Clicked()
     {
+        if(PlayerStats.Instance.GetMoney() - baseBait.Value < 0)
+            return;
         PlayerStats.Instance.RemoveMoney(baseBait.Value);
         InventoryUI.Instance.UpdateText();
         Inventory.Instance.AddBait(baseBait,1);

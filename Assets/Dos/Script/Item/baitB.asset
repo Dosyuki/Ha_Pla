@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1c068775274f5e40b9028ce6cd422e4, type: 3}
-  m_Name: baitA
+  m_Name: baitB
   m_EditorClassIdentifier: 
-  Name: baitA
+  Name: baitB
   Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
   Description: good good
-  Value: 10
-  LuckMultiplier: 1.5
-  WeightMultiplier: 1.5
+  Value: 50
+  LuckMultiplier: 2
+  WeightMultiplier: 2

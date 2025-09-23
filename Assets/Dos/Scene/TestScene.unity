@@ -1956,6 +1956,11 @@ MonoBehaviour:
     Rarity: 0
     PrefabModel: {fileID: 0}
     SpriteModel: {fileID: 0}
+    AISpeed: 0
+    DashMultiplier: 0
+    DashDuration: 0
+    ProgressRateIncrease: 0
+    ProgressRateDecrease: 0
     baseFish: {fileID: 0}
   fishName: {fileID: 1612727768}
   fishWeight: {fileID: 194913529}
@@ -4860,7 +4865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sun: {fileID: 541214621}
-  timeToRotate: 60
+  timeToRotate: 900
 --- !u!4 &1447406322
 Transform:
   m_ObjectHideFlags: 0
@@ -5141,39 +5146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87253a9a6889a014bae127469e8b2043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allFish:
-  - Name: dawawdawd
-    Description: awdawdawd
-    Weight: 321123
-    Value: 312132
-    Rarity: 0
-    PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
-    SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
-    baseFish: {fileID: 11400000, guid: fa56b9616c637a146b42139f1d289c39, type: 2}
-  - Name: asdfsfdfsd
-    Description: 312123
-    Weight: 1.2123231
-    Value: 1221
-    Rarity: 0
-    PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
-    SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
-    baseFish: {fileID: 11400000, guid: fa56b9616c637a146b42139f1d289c39, type: 2}
-  - Name: 345534
-    Description: ghffgh
-    Weight: 678
-    Value: 534
-    Rarity: 0
-    PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
-    SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
-    baseFish: {fileID: 11400000, guid: fa56b9616c637a146b42139f1d289c39, type: 2}
-  - Name: hfgfgh
-    Description: 564456
-    Weight: 365
-    Value: 346
-    Rarity: 0
-    PrefabModel: {fileID: 919132149155446097, guid: ed4587b59be15b14fa6651bd9b6b7316, type: 3}
-    SpriteModel: {fileID: 341571654, guid: e2cc664431bf91547b8174a77d8cb8a9, type: 3}
-    baseFish: {fileID: 11400000, guid: fa56b9616c637a146b42139f1d289c39, type: 2}
+  allFish: []
   allBait: []
   currentRod: {fileID: 685573955}
   currentBait:
@@ -5197,7 +5170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81ab74b98d47de4cb88bd58a2396cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Money: 10000
+  Money: 50
 --- !u!114 &1538086864 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 11400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
@@ -5291,11 +5264,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3571767707691462230, guid: b1b6a4a4712a0364bbffc21e45491ba2, type: 3}
       propertyPath: deepColor.g
-      value: 0.4274356
+      value: 0.42743406
       objectReference: {fileID: 0}
     - target: {fileID: 3571767707691462230, guid: b1b6a4a4712a0364bbffc21e45491ba2, type: 3}
       propertyPath: shoreColor.b
-      value: 0.3019454
+      value: 0.30194384
       objectReference: {fileID: 0}
     - target: {fileID: 3571767707691462230, guid: b1b6a4a4712a0364bbffc21e45491ba2, type: 3}
       propertyPath: waveSteepness
@@ -5311,7 +5284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3571767707691462230, guid: b1b6a4a4712a0364bbffc21e45491ba2, type: 3}
       propertyPath: horizonColor.g
-      value: 0.22743559
+      value: 0.22743407
       objectReference: {fileID: 0}
     - target: {fileID: 3571767707691462230, guid: b1b6a4a4712a0364bbffc21e45491ba2, type: 3}
       propertyPath: shallowColor.b
@@ -6413,7 +6386,7 @@ PrefabInstance:
       objectReference: {fileID: 1139284699}
     - target: {fileID: 5430419801769367239, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
       propertyPath: RecallSpeed
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5430419801769367239, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
       propertyPath: newMinigame
@@ -6445,7 +6418,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5571259424161187479, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7206126339716675670, guid: 21e763477d461854faea9fc4ca6ff784, type: 3}
       propertyPath: m_Time

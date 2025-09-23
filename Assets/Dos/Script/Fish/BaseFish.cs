@@ -13,6 +13,12 @@ public class BaseFish : ScriptableObject
     public GameObject PrefabModel;
     public Sprite SpriteModel;
     
+    public float AISpeed;
+    public float DashMultiplier;
+    public float DashDuration;
+    public float ProgressRateIncrease;
+    public float ProgressRateDecrease;
+
 }
 
 public enum FishRarity
