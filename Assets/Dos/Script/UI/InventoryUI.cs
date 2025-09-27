@@ -71,7 +71,7 @@ public class InventoryUI : Singleton<InventoryUI>
     public void UpdateText()
     {
         maxslotText.text = $"{allFish.Count} / {Inventory.Instance.GetMaxSlots()}";
-        moneyText.text = $"{PlayerStats.Instance.GetMoney()} Fishllar";
+        moneyText.text = $"{PlayerStats.Instance.GetMoney():F2} Fishlars";
     }
 }
 public enum InventorySource

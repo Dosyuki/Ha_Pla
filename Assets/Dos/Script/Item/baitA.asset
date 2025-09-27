@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: baitA
   Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
-  Description: good good
-  Value: 10
-  LuckMultiplier: 1.5
-  WeightMultiplier: 1.5
+  Description: No Modifier
+  Value: 1
+  LuckMultiplier: 1
+  WeightMultiplier: 1

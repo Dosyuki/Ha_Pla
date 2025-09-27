@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d644d841eab5eb04b94a21e681a997b7, type: 3}
+  m_Name: BirdterflyFish
+  m_EditorClassIdentifier: 
+  Name: BirdterflyFish
+  Description: 
+  Weight: 3
+  Value: 10
+  Rarity: 0
+  DropChance: 40
+  PrefabModel: {fileID: 919132149155446097, guid: 31b64fac5b882114b9ee4454e76ff33c, type: 3}
+  SpriteModel: {fileID: 21300000, guid: 5b1a64ea234fb2343b8d0686c51280de, type: 3}
+  AISpeed: 1
+  DashMultiplier: 2
+  DashDuration: 0.6
+  ProgressRateIncrease: 10
+  ProgressRateDecrease: 6

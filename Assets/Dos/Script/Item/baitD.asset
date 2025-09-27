@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1c068775274f5e40b9028ce6cd422e4, type: 3}
-  m_Name: baitB
+  m_Name: baitD
   m_EditorClassIdentifier: 
   Name: baitB
   Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
-  Description: +10% Luck Roll
-  Value: 5
-  LuckMultiplier: 1.1
-  WeightMultiplier: 1
+  Description: +7% Luck Roll , +7% Weight Roll
+  Value: 8
+  LuckMultiplier: 7
+  WeightMultiplier: 7

@@ -81,7 +81,7 @@ public class ShopManager : Singleton<ShopManager>
             foreach (Fish fish in selectedFish)
                 _value +=  fish.CalculateValue();
         currentSelectedValue = _value;
-        valueText.text = $"{currentSelectedValue} Fishllars";
+        valueText.text = $"{currentSelectedValue:F2} Fishlars";
     }
 
     public void OpenShopUI()

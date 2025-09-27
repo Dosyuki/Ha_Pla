@@ -16,8 +16,8 @@ public class CardInventoryUI : MonoBehaviour
     {
         baseFish = fish;
         sprite.sprite = baseFish.SpriteModel;
-        weight.text = baseFish.Weight.ToString() + " KG";
-        value.text = baseFish.CalculateValue() + " Fishlar";
+        weight.text = $"{baseFish.Weight.ToString():F2} KG";
+        value.text = $"{baseFish.CalculateValue():F2} Fishlars";
         name.text = baseFish.Name;
     }
 

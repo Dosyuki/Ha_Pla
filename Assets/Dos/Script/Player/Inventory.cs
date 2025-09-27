@@ -34,6 +34,7 @@ public class Inventory : Singleton<Inventory>
     void Start()
     {
         maxSlots = 20 + (currentUpgradeTier * 10);
+        isEquipRod = true;
     }
 
     // Update is called once per frame
@@ -73,6 +74,8 @@ public class Inventory : Singleton<Inventory>
             // Create a new entry
             Bait newBait = new Bait(baseBait, amount);
             allBait.Add(newBait);
+            currentBait = newBait;
+            return;
         }
         else
         {
@@ -83,7 +86,7 @@ public class Inventory : Singleton<Inventory>
     }
 
 
-public List<Fish> GetAllFish() => allFish;
+    public List<Fish> GetAllFish() => allFish;
     public bool isMaxFish => allFish.Count + 1 > maxSlots;
     public int GetMaxSlots() => maxSlots;
     public int UpgradeCost() => (int)((currentUpgradeTier * 1.5f) * 100);
