@@ -65,7 +65,8 @@ public class FishingRod : BaseItem
         // Start charging when press
         if(UIManager.Instance.GetCurrentState() == currentState.UI)
             return;
-        if (Input.GetMouseButtonDown(0) && !isThrown && Inventory.Instance.currentBait.amount > 0)
+        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null 
+                                                         && Inventory.Instance.currentBait.amount > 0))
         {
             StartCharging();
             Inventory.Instance.currentBait.amount--;
@@ -185,6 +186,7 @@ public class FishingRod : BaseItem
         baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
         rodTip.gameObject.SetActive(false);
         playerController.enabled = false;
+        bait.GetComponent<MeshRenderer>().enabled = false;
 
         if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
         {
@@ -199,9 +201,10 @@ public class FishingRod : BaseItem
             {
                 Destroy(child.gameObject);
             }
-            if(currentFish.PrefabModel != null)
+            if(currentFish.Value != 0 && currentFish != null)
                 fishCollectUI.UpdateFish(currentFish);
             playerController.enabled = true;
+            bait.GetComponent<MeshRenderer>().enabled = true;
 
         }
     }

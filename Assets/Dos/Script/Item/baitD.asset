@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1c068775274f5e40b9028ce6cd422e4, type: 3}
   m_Name: baitD
   m_EditorClassIdentifier: 
-  Name: baitB
+  Name: baitD
   Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
   Description: +7% Luck Roll , +7% Weight Roll
   Value: 8
-  LuckMultiplier: 7
-  WeightMultiplier: 7
+  LuckMultiplier: 1.07
+  WeightMultiplier: 1.07

@@ -3,9 +3,10 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ShopCardUI : MonoBehaviour
+public class ShopCardUI : MonoBehaviour , IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private BaseBait baseBait;
     
@@ -35,6 +36,10 @@ public class ShopCardUI : MonoBehaviour
         PlayerStats.Instance.RemoveMoney(baseBait.Value);
         InventoryUI.Instance.UpdateText();
         Inventory.Instance.AddBait(baseBait,1);
+        
+        BaitInventoryPanel.Instance.CloseBaitUI();
+        BaitInventoryPanel.Instance.OpenBaitUI();
+        
         Debug.Log(baseBait.Name + " " + baseBait.Value);
         isRepeatClicking = true;
         comboBuy++;
@@ -56,5 +61,14 @@ public class ShopCardUI : MonoBehaviour
             isRepeatClicking = false;
             comboBuy = 0;
         }
+    }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        BaitTooltip.Instance.Show(baseBait.Description);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        BaitTooltip.Instance.Hide();
     }
 }

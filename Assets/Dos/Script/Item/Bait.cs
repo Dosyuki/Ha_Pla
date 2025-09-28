@@ -21,4 +21,6 @@ public class Bait
         LuckMultiplier = bait.LuckMultiplier;
         this.amount = amount;
     }
+
+    public BaseBait GetBaseBait() => bait;
 }

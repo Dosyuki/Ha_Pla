@@ -18,12 +18,12 @@ public class Fish
     
     [SerializeField] private BaseFish baseFish;
 
-    public Fish(BaseFish baseFish, float luckMultiplier, float weightMultiplier,Bait bait)
+    public Fish(BaseFish baseFish, float luckMultiplier, float weightMultiplier, Bait bait)
     {
         this.baseFish = baseFish;
         Name = baseFish.Name;
         Description = baseFish.Description;
-        Rarity = baseFish.Rarity;
+        Rarity = baseFish.Rarity; // รับค่าตรงจาก BaseFish
         Value = baseFish.Value;
         PrefabModel = baseFish.PrefabModel;
         SpriteModel = baseFish.SpriteModel;
@@ -33,15 +33,13 @@ public class Fish
         ProgressRateIncrease = baseFish.ProgressRateIncrease;
         ProgressRateDecrease = baseFish.ProgressRateDecrease;
 
-        float minWeight = baseFish.Weight * 0.8f * weightMultiplier * bait.WeightMultiplier;
-        float maxWeight = baseFish.Weight * 1.2f * weightMultiplier * bait.WeightMultiplier;
-        Weight = Random.Range(minWeight, maxWeight);
+        float[] dynamicCon = TimeSystem.Instance.GetDynamicCondition();
 
-        if (Random.value < 0.05f * luckMultiplier * bait.LuckMultiplier && Rarity < FishRarity.Legendary)
-        {
-            Rarity += 1; 
-        }
+        float minWeight = baseFish.Weight * 0.8f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1];
+        float maxWeight = baseFish.Weight * 1.2f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1];
+        Weight = Random.Range(minWeight, maxWeight);
     }
+
 
     public float CalculateValue()
     {

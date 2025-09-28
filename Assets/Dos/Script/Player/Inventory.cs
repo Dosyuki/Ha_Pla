@@ -7,7 +7,19 @@ public class Inventory : Singleton<Inventory>
     [SerializeField] private List<Fish> allFish;
     [SerializeField] private List<Bait> allBait = new List<Bait>();
     [SerializeField] private FishingRod currentRod;
-    [SerializeField] public Bait currentBait;
+    private Bait _currentBait;
+
+    [SerializeField]
+    public Bait currentBait
+    {
+        get => _currentBait;
+        set
+        {
+            _currentBait = value;
+            UpdateCurrentBait();
+        }
+    }
+    [SerializeField] private BaitInventoryUI baitInventoryUI;
     [SerializeField] private int maxSlots;
     public FishingRod CurrentRod => currentRod;
 
@@ -46,6 +58,12 @@ public class Inventory : Singleton<Inventory>
         }
     }
 
+    public void UpdateCurrentBait()
+    {
+        if(currentBait != null)
+            baitInventoryUI.UpdateCardUI(currentBait,currentBait.amount);
+    }
+    
     public void AddFish(Fish fish)
     {
         if (!isMaxFish)
@@ -90,4 +108,6 @@ public class Inventory : Singleton<Inventory>
     public bool isMaxFish => allFish.Count + 1 > maxSlots;
     public int GetMaxSlots() => maxSlots;
     public int UpgradeCost() => (int)((currentUpgradeTier * 1.5f) * 100);
+    public List<Bait> GetAllBait() => allBait;
+
 }

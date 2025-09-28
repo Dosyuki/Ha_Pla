@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1c068775274f5e40b9028ce6cd422e4, type: 3}
   m_Name: baitC
   m_EditorClassIdentifier: 
-  Name: baitB
+  Name: baitC
   Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
   Description: +10% Weight Roll
   Value: 5

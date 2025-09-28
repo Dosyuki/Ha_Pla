@@ -8,23 +8,50 @@ public class FishManager : Singleton<FishManager>
     public Fish RandomFish(float luckMultiplier = 1f, float weightMultiplier = 1f, Bait bait = null)
     {
         float totalChance = 0f;
+
+        // รวมโอกาสสุ่ม โดยใช้ LuckMultiplier ช่วยเพิ่มโอกาสปลาหายาก
+        Dictionary<BaseFish, float> adjustedChances = new Dictionary<BaseFish, float>();
+
         foreach (var fish in fishPrefabsRedZone)
         {
-            totalChance += fish.DropChance;
+            float adjustedChance = fish.DropChance;
+
+            // ถ้าปลามี Rarity สูง → ให้ LuckMultiplier มีผลมากขึ้น
+            switch (fish.Rarity)
+            {
+                case FishRarity.Basic:
+                    adjustedChance *= 1f; // Luck ไม่ช่วยปลาธรรมดา
+                    break;
+                case FishRarity.Rare:
+                    adjustedChance *= Mathf.Lerp(1f, luckMultiplier, 0.6f);
+                    break;
+                case FishRarity.Epic:
+                    adjustedChance *= luckMultiplier;
+                    break;
+                case FishRarity.Legendary:
+                    adjustedChance *= luckMultiplier * 1.5f;
+                    break;
+            }
+
+            adjustedChances[fish] = adjustedChance;
+            totalChance += adjustedChance;
         }
 
+        // ทอยลูกเต๋า
         float roll = Random.Range(0, totalChance);
         float cumulative = 0f;
 
-        foreach (var fish in fishPrefabsRedZone)
+        foreach (var kv in adjustedChances)
         {
-            cumulative += fish.DropChance;
+            cumulative += kv.Value;
             if (roll <= cumulative)
             {
-                return new Fish(fish, luckMultiplier, weightMultiplier,bait);
+                return new Fish(kv.Key, luckMultiplier, weightMultiplier, bait);
             }
         }
 
-        return new Fish(fishPrefabsRedZone[0], luckMultiplier, weightMultiplier,bait);
+        // fallback
+        return new Fish(fishPrefabsRedZone[0], luckMultiplier, weightMultiplier, bait);
     }
+
 }

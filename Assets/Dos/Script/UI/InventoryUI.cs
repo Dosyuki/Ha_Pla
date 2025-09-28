@@ -12,6 +12,7 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private TMP_Text maxslotText;
     [SerializeField] private TMP_Text moneyText;
 
+    [SerializeField] private CanvasGroup fishGroup;
     
     private CanvasGroup canvasGroup;
     private bool isOpen = false;
@@ -38,6 +39,9 @@ public class InventoryUI : Singleton<InventoryUI>
         canvasGroup.alpha = 1;
         canvasGroup.interactable = true;    
         canvasGroup.blocksRaycasts = true;
+        fishGroup.alpha = 1;
+        fishGroup.interactable = true;
+        fishGroup.blocksRaycasts = true;
         UpdateText();
         foreach (Fish fish in allFish)
         {
@@ -58,6 +62,8 @@ public class InventoryUI : Singleton<InventoryUI>
         Debug.Log("closeInventoryUI" );
         isOpen = false;
         UIManager.Instance.ChangeState(currentState.None);
+        BaitInventoryPanel.Instance.CloseBaitUI();
+        BaitTooltip.Instance.Hide();
         canvasGroup.alpha = 0;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
