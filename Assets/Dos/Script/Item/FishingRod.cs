@@ -154,6 +154,7 @@ public class FishingRod : BaseItem
         else
         {
             Debug.Log("Bad");
+            fishingSlider.value = 0.20f;
         }
 
         isCharging = false;
