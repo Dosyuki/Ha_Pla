@@ -61,7 +61,7 @@ public class BoatPhysics : MonoBehaviour
         boatCamera.GetComponent<AudioListener>().enabled = true;
     }
 
-    private void ExitBoat()
+    public void ExitBoat()
     {
         inBoat = false;
         playerInsideTrigger = false;
