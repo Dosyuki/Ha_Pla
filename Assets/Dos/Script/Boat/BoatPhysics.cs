@@ -16,6 +16,7 @@ public class BoatPhysics : MonoBehaviour
     [SerializeField] private Vector3 hitboxWheelSize;
     [SerializeField] private Vector3 offsetWheel;
     [SerializeField] private LayerMask playerMask;
+    [SerializeField] private CanvasGroup wheelGroup;
     private Collider[] hitColliders;
 
     [Header("Other Settings")]
@@ -45,14 +46,20 @@ public class BoatPhysics : MonoBehaviour
             playerMask
         );
 
-        if (hitColliders.Length > 0 && Input.GetKeyDown(KeyCode.F))
+        if (hitColliders.Length > 0)
         {
-            if (!inBoat)
-                EnterBoat();
+            wheelGroup.alpha = 1;
+            if(Input.GetKeyDown(KeyCode.F))
+                if (!inBoat)
+                    EnterBoat();
         }
         else if (Input.GetKeyDown(KeyCode.F) && inBoat)
         {
             ExitBoat();
+        }
+        else
+        {
+            wheelGroup.alpha = 0;
         }
     }
     private void EnterBoat()
@@ -76,6 +83,8 @@ public class BoatPhysics : MonoBehaviour
         rb.isKinematic = true;
         playerController.transform.position = exitPoint.position;
         playerController.transform.rotation = exitPoint.rotation;
+        wheelGroup.alpha = 1;
+
 
         playerController.SetCanMove(true);
         playerModel.SetActive(true);
@@ -99,7 +108,7 @@ public class BoatPhysics : MonoBehaviour
         float moveInput = Input.GetAxis("Vertical"); 
         float turnInput = Input.GetAxis("Horizontal");
 
-        rb.AddForce(transform.right * moveInput * moveSpeed, ForceMode.Force);
+        rb.AddForce(transform.forward * moveInput * moveSpeed, ForceMode.Force);
 
         if (Mathf.Abs(moveInput) > 0.01f)
         {

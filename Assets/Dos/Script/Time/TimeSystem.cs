@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class TimeSystem : Singleton<TimeSystem>
     
         //variable to store the speed of rotation
         [SerializeField] private float sunRotationSpeed;
+        [SerializeField] private float sleepTimeMultipier;
+        private float startSpeed;
     
         //variables to store the lighting presets
         [Header("LightingPreset")]
@@ -20,7 +23,12 @@ public class TimeSystem : Singleton<TimeSystem>
         [SerializeField] private Gradient sunColor;
         //function to update Sun's rotation
         [SerializeField] private Image dayLightUI;
-    
+
+        private void Start()
+        {
+            startSpeed = sunRotationSpeed;
+        }
+
         private void Update()
         {
             timeOfDay += (24f / sunRotationSpeed) * Time.deltaTime;
@@ -68,5 +76,13 @@ public class TimeSystem : Singleton<TimeSystem>
             condition[0] = 1f;
             condition[1] = 1f;
             return condition;
+        }
+
+        public void Sleep()
+        {
+            if(startSpeed == sunRotationSpeed)
+                sunRotationSpeed /= sleepTimeMultipier;
+            else
+                sunRotationSpeed = startSpeed;
         }
 }
