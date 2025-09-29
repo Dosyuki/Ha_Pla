@@ -108,7 +108,7 @@ public class BoatPhysics : MonoBehaviour
         float moveInput = Input.GetAxis("Vertical"); 
         float turnInput = Input.GetAxis("Horizontal");
 
-        rb.AddForce(transform.forward * moveInput * moveSpeed, ForceMode.Force);
+        rb.AddForce(-transform.up * moveInput * moveSpeed, ForceMode.Force);
 
         if (Mathf.Abs(moveInput) > 0.01f)
         {
