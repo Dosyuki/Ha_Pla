@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         FindAnyObjectByType<BoatHopOn>().SetisOnBoat(false);
         player.transform.position = playerSpawnPos.position;
         boat.GetComponentInParent<Rigidbody>().transform.position = boatSpawnPos.position;
+        boat.GetComponentInParent<Rigidbody>().transform.rotation = boatSpawnPos.rotation;
         player.GetComponent<CharacterController>().enabled = true;
         player.SetCanMove(true);
     }
