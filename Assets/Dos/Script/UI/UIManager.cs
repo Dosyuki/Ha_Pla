@@ -20,7 +20,7 @@ public class UIManager : Singleton<UIManager>
                 m_currentState = newState;
                 m_FirstPersonController.SetCanMove(true);
                 m_FirstPersonController.GetMouseLook().SetCursorLock(true);
-                Inventory.Instance.CurrentRod.HideSliderCanvas(false);
+                Inventory.Instance.CurrentRod.HideSliderCanvas(!Inventory.Instance.isEquipRod);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = false;
                 break;
@@ -28,7 +28,7 @@ public class UIManager : Singleton<UIManager>
                 m_currentState = newState;
                 m_FirstPersonController.SetCanMove(false);
                 m_FirstPersonController.GetMouseLook().SetCursorLock(false);
-                Inventory.Instance.CurrentRod.HideSliderCanvas(true);
+                Inventory.Instance.CurrentRod.HideSliderCanvas(!Inventory.Instance.isEquipRod);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 break;

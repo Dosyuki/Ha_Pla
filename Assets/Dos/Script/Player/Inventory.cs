@@ -27,11 +27,13 @@ public class Inventory : Singleton<Inventory>
 
     private int currentUpgradeTier = 1;
 
-    private bool isEquipRod
+    public bool isEquipRod
     {
         get { return _isEquipRod; }
         set
         {
+            if(currentRod.getIsThrown() || UIManager.Instance.GetCurrentState() == currentState.UI)
+                return;
             _isEquipRod = value;
             if (currentRod != null)
             {

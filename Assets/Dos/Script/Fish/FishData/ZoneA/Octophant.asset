@@ -20,7 +20,7 @@ MonoBehaviour:
   DropChance: 3
   PrefabModel: {fileID: 919132149155446097, guid: 1c47006ea51f57b468af808588535909, type: 3}
   SpriteModel: {fileID: 21300000, guid: 5d49c4024030cc84188db5b9c298bc3a, type: 3}
-  AISpeed: 0.1
+  AISpeed: 2
   DashMultiplier: 3
   DashDuration: 0.3
   ProgressRateIncrease: 8

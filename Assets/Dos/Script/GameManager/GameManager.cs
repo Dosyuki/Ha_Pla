@@ -24,6 +24,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        OutofBoundDetection();
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PlayerStats.Instance.AddMoney(10000);
+            InventoryUI.Instance.UpdateText();
+        }
+    }
+
+    private void OutofBoundDetection()
+    {
         bool playerInRange = Physics.OverlapSphere(startPos.position, radius, playerMask).Length > 0;
 
         // Show countdown if outside
@@ -74,10 +84,11 @@ public class GameManager : MonoBehaviour
         player.SetCanMove(false);
         player.GetComponent<CharacterController>().enabled = false;
         boat.ExitBoat();
-        FindAnyObjectByType<BoatHopOn>().SetisOnBoat(false);
         player.transform.position = playerSpawnPos.position;
         boat.GetComponentInParent<Rigidbody>().transform.position = boatSpawnPos.position;
         boat.GetComponentInParent<Rigidbody>().transform.rotation = boatSpawnPos.rotation;
+        FindAnyObjectByType<BoatHopOn>().SetisOnBoat(false);
+        FindAnyObjectByType<BoatHopOn>().SetisInRange(false);
         player.GetComponent<CharacterController>().enabled = true;
         player.SetCanMove(true);
     }

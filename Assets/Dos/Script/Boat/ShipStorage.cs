@@ -27,9 +27,9 @@ public class ShipStorage : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.R) && PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
         {
-            Inventory.Instance.UpgradeTier();
-            InventoryUI.Instance.UpdateText();
             PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
+            InventoryUI.Instance.UpdateText();
+            Inventory.Instance.UpgradeTier();
         }
 
         if (InventoryUI.Instance.gameObject.activeInHierarchy && 

@@ -12,6 +12,7 @@ public class BoatHopOn : MonoBehaviour
     private bool isOnBoat;
 
     public bool SetisOnBoat(bool value) => isOnBoat = value;
+    public bool SetisInRange(bool value) => isInRange = value;
 
     private void Update()
     {
