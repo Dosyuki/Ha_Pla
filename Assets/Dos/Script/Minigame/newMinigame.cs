@@ -27,7 +27,8 @@ public class newMinigame : MonoBehaviour
     [Header("ProgressRate")]
     [SerializeField] private float progressRateIncrease;
     [SerializeField] private float progressRateDecrease;
-    
+
+    private Fish curFish;
     private RectTransform currentFish;
     private Vector2 fishTarget;
 
@@ -90,8 +91,14 @@ public class newMinigame : MonoBehaviour
 
         if (progress >= maxProgress)
         {
-            Inventory.Instance.CurrentRod.BeginRecall();
-            UIManager.Instance.ChangeState(currentState.None);
+            // Spawn Fish and Yeet Fish
+            Inventory.Instance.CurrentRod.SetIsRecalling(true);
+            TransitionFish.Instance.StartTransition(curFish);
+
+            // Tell the rod we’re done
+            Inventory.Instance.CurrentRod.ClearMinigame();
+
+            Destroy(gameObject, 0.25f);
         }
     }
 
@@ -204,6 +211,7 @@ public class newMinigame : MonoBehaviour
 
     public void AssignFish(Fish fish)
     {
+        curFish = fish;
         aiSpeed = 40 * fish.AISpeed;
         boostMultiplier = fish.DashMultiplier;
         boostDuration = fish.DashDuration;

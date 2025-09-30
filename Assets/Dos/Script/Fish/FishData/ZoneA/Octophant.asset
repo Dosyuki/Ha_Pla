@@ -18,9 +18,9 @@ MonoBehaviour:
   Value: 200
   Rarity: 3
   DropChance: 3
-  PrefabModel: {fileID: 919132149155446097, guid: 25e39749488b1644a93464c0f84e9eca, type: 3}
+  PrefabModel: {fileID: 919132149155446097, guid: 1c47006ea51f57b468af808588535909, type: 3}
   SpriteModel: {fileID: 21300000, guid: 5d49c4024030cc84188db5b9c298bc3a, type: 3}
-  AISpeed: 2
+  AISpeed: 0.1
   DashMultiplier: 3
   DashDuration: 0.3
   ProgressRateIncrease: 8

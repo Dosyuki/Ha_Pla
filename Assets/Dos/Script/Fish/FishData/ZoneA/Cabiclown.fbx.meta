@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cd31817785aa68740ac8e681cd710843
+guid: d04e80a9d0c35cc45bd15270c9b5bc44
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: UV_Cabi
-    second: {fileID: 2100000, guid: 089e8313c02b4244281725c2cd4fa30a, type: 2}
+    second: {fileID: 2100000, guid: 0bbf4feac2d3df749af660949300dec6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -38,7 +38,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.4
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -93,7 +93,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.4
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
