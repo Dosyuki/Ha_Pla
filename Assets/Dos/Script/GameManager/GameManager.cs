@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
         player.SetCanMove(false);
         player.GetComponent<CharacterController>().enabled = false;
         boat.ExitBoat();
+        FindAnyObjectByType<BoatHopOn>().SetisOnBoat(false);
         player.transform.position = playerSpawnPos.position;
         boat.GetComponentInParent<Rigidbody>().transform.position = boatSpawnPos.position;
         player.GetComponent<CharacterController>().enabled = true;
