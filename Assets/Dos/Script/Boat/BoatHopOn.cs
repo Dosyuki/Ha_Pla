@@ -11,6 +11,8 @@ public class BoatHopOn : MonoBehaviour
     private Transform player;
     private bool isOnBoat;
 
+    public bool SetisOnBoat(bool value) => isOnBoat = value;
+
     private void Update()
     {
         if (isInRange)
