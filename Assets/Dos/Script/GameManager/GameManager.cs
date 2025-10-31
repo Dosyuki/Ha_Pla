@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,30 @@ public class GameManager : MonoBehaviour
 
     private bool playerInBoundsLastFrame = true;
     private Coroutine fadeCoroutine;
+
+    private void Start()
+    {
+        if (GameSession.Instance.CurrentSlotId > 0)
+        {
+            // ถ้าใช่ (ค่าเป็น 1, 2, 3, หรือ 4) ให้สั่ง SaveManager ให้โหลด
+            Debug.Log($"GameManager: กำลังโหลดข้อมูลจาก Slot {GameSession.Instance.CurrentSlotId}");
+            bool loadSuccess = SaveManager.Instance.LoadGame(GameSession.Instance.CurrentSlotId);
+
+            if (!loadSuccess)
+            {
+                Debug.LogError($"Load Slot {GameSession.Instance.CurrentSlotId} ล้มเหลว! (ไฟล์อาจจะไม่มี)");
+            }
+
+            // รีเซ็ตค่า static นี้ทันที เพื่อไม่ให้โหลดซ้ำ
+            //MainMenu.slotToLoad = 0; 
+        }
+        else
+        {
+            // ถ้า MainMenu.slotToLoad = 0 (คือการกด "New Save")
+            // ก็ไม่ต้องทำอะไร เริ่มเกมใหม่ตามปกติ
+            Debug.Log("GameManager: เริ่มเกมใหม่ (New Game).");
+        }
+    }
 
     private void Update()
     {

@@ -85,4 +85,20 @@ public class TimeSystem : Singleton<TimeSystem>
             else
                 sunRotationSpeed = startSpeed;
         }
+        public WorldData GetSaveData()
+        {
+            return new WorldData
+            {
+                timeOfDay = this.timeOfDay
+            };
+        }
+
+        public void LoadData(WorldData data)
+        {
+            this.timeOfDay = data.timeOfDay;
+        
+            // บังคับอัปเดตแสงทันทีหลังจาก Load
+            UpdateSunRotation();
+            UpdateLighting();
+        }
 }

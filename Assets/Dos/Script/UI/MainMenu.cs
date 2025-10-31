@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
+    public static int slotToLoad = 0; // 0 = New Game, >0 = Load Slot ID
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

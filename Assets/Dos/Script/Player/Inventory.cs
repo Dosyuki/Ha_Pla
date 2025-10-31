@@ -104,7 +104,90 @@ public class Inventory : Singleton<Inventory>
         }
         currentBait = existing;
     }
+    public InventoryData GetSaveData()
+    {
+        InventoryData data = new InventoryData();
+        data.maxSlots = this.maxSlots;
+        data.currentUpgradeTier = this.currentUpgradeTier;
+        data.currentBaitName = (currentBait != null) ? currentBait.Name : string.Empty;
 
+        // แปลง List<Fish> (Runtime) เป็น List<FishData> (Save)
+        data.allFish = new List<FishData>();
+        foreach (Fish fish in allFish)
+        {
+            data.allFish.Add(new FishData(fish));
+        }
+
+        // แปลง List<Bait> (Runtime) เป็น List<BaitData> (Save)
+        data.allBait = new List<BaitData>();
+        foreach (Bait bait in allBait)
+        {
+            data.allBait.Add(new BaitData(bait));
+        }
+        
+        return data;
+    }
+
+    public void LoadData(InventoryData data)
+    {
+        // 1. โหลดข้อมูลพื้นฐาน
+        this.maxSlots = data.maxSlots;
+        this.currentUpgradeTier = data.currentUpgradeTier;
+
+        // 2. ล้างข้อมูลเก่า
+        allFish.Clear();
+        allBait.Clear();
+
+        // 3. สร้าง List<Fish> คืนจาก List<FishData>
+        FishManager fishDB = FishManager.Instance;
+        foreach (FishData fishData in data.allFish)
+        {
+            BaseFish baseFish = fishDB.GetBaseFishByName(fishData.baseFishName);
+            if (baseFish != null)
+            {
+                // สร้าง Fish Instance ใหม่
+                // เราต้องหา Dummy Bait มาใส่ใน constructor ชั่วคราว
+                // หรือปรับ Constructor ของ Fish ให้ยืดหยุ่นกว่านี้
+                
+                // (สมมติว่าคุณมีเหยื่อ "baitA" เป็นเหยื่อพื้นฐาน)
+                BaseBait dummyBaseBait = BaitManager.Instance.GetBaseBaitByName("baitA");
+                if (dummyBaseBait == null) {
+                    Debug.LogError("Dummy bait 'baitA' not found for loading fish!");
+                    continue;
+                }
+                
+                Bait dummyBait = new Bait(dummyBaseBait, 0); //
+                
+                //
+                Fish newFish = new Fish(baseFish, 1f, 1f, dummyBait); // สร้างด้วยค่า dummy
+                newFish.Weight = fishData.weight; // **Override น้ำหนักที่ Save ไว้**
+                allFish.Add(newFish);
+            }
+        }
+
+        // 4. สร้าง List<Bait> คืนจาก List<BaitData>
+        BaitManager baitDB = BaitManager.Instance;
+        foreach (BaitData baitData in data.allBait)
+        {
+            BaseBait baseBait = baitDB.GetBaseBaitByName(baitData.baseBaitName);
+            if (baseBait != null)
+            {
+                Bait newBait = new Bait(baseBait, baitData.amount); //
+                allBait.Add(newBait);
+
+                // ตั้งค่าเหยื่อที่สวมใส่
+                if (baitData.baseBaitName == data.currentBaitName)
+                {
+                    // อย่าใช้ property "currentBait" ตรงๆ ตอน Load เพราะมันอาจจะเรียก UpdateCurrentBait() เร็วไป
+                    _currentBait = newBait; 
+                }
+            }
+        }
+        
+        // อัปเดต UI ตอนสุดท้าย
+        UpdateCurrentBait(); //
+        Debug.Log("Inventory loaded.");
+    }
 
     public List<Fish> GetAllFish() => allFish;
     public bool isMaxFish => allFish.Count + 1 > maxSlots;
