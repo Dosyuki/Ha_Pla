@@ -1,3 +1,4 @@
+// เปิดไฟล์: Dos/Script/Fish/Fish.cs
 using UnityEngine;
 
 [System.Serializable]
@@ -16,14 +17,17 @@ public class Fish
     public float ProgressRateIncrease;
     public float ProgressRateDecrease;
     
+    public string photoGUID;
+
     [SerializeField] private BaseFish baseFish;
 
     public Fish(BaseFish baseFish, float luckMultiplier, float weightMultiplier, Bait bait)
     {
+        // ... (โค้ด Constructor ของคุณเหมือนเดิม) ...
         this.baseFish = baseFish;
         Name = baseFish.Name;
         Description = baseFish.Description;
-        Rarity = baseFish.Rarity; // รับค่าตรงจาก BaseFish
+        Rarity = baseFish.Rarity;
         Value = baseFish.Value;
         PrefabModel = baseFish.PrefabModel;
         SpriteModel = baseFish.SpriteModel;
@@ -45,4 +49,5 @@ public class Fish
     {
         return Value * (Weight / baseFish.Weight);
     }
+    public BaseFish GetBaseFish() => baseFish;
 }

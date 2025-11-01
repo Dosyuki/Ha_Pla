@@ -70,6 +70,10 @@ public class Inventory : Singleton<Inventory>
     {
         if (!isMaxFish)
             allFish.Add(fish);
+        if (fish != null)
+        {
+            EncyclopediaManager.Instance.SubmitFish(fish);
+        }
     }
 
     public void RemoveFish(Fish fish)

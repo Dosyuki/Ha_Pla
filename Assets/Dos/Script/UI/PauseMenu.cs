@@ -22,6 +22,7 @@ public class PauseMenu : MonoBehaviour
         {
             isPaused = false;
             pauseMenu.SetActive(false);
+            UIManager.Instance.ChangeState(currentState.None);
         }
     }
 

@@ -9,6 +9,7 @@ public class GameData
     public InventoryData inventory;
     public WorldData world;
     public CharacterCustomizeData characterData; // เพิ่มส่วนของ Customization
+    public EncyclopediaData encyclopedia;
 }
 
 // ไฟล์ใหม่: PlayerStatsData.cs
@@ -60,7 +61,7 @@ public class FishData
 {
     public string baseFishName; // ID อ้างอิง
     public float weight;       // ข้อมูลที่เปลี่ยน
-
+    public string photoGUID;
     public FishData(Fish fish)
     {
         baseFishName = fish.Name; // อ้างอิงจากคลาส Fish

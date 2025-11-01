@@ -42,6 +42,7 @@ public class SaveManager : Singleton<SaveManager>
         data.inventory = Inventory.Instance.GetSaveData();
         data.world = TimeSystem.Instance.GetSaveData();
         data.characterData = CharacterCustomize.Instance.GetSaveData(); // **เพิ่มส่วนตัวละคร**
+        data.encyclopedia = EncyclopediaManager.Instance.GetSaveData();
         data.lastUpdated = System.DateTime.Now.Ticks;
 
         // 2. แปลงเป็น JSON
@@ -73,7 +74,7 @@ public class SaveManager : Singleton<SaveManager>
         Inventory.Instance.LoadData(data.inventory);
         TimeSystem.Instance.LoadData(data.world);
         CharacterCustomize.Instance.LoadData(data.characterData); // **เพิ่มส่วนตัวละคร**
-        
+        EncyclopediaManager.Instance.LoadData(data.encyclopedia);
         Debug.Log("Load Complete!");
         return true;
     }

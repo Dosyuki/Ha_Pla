@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class FishManager : Singleton<FishManager>
 {
     public List<BaseFish> fishPrefabsRedZone;
-    [SerializeField] private List<BaseFish> zoneA_Fish;
     private Dictionary<string, BaseFish> fishLookup;
     protected void Awake()
     {
