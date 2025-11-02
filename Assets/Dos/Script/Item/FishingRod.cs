@@ -60,6 +60,8 @@ public class FishingRod : BaseItem
         fishingSlider.minValue = 1;
         fishingSlider.maxValue = 2;
         fishingSlider.value = 1;
+        
+        HideSliderCanvas(true);
     }
 
     private void Update()
@@ -108,6 +110,7 @@ public class FishingRod : BaseItem
 
     private void StartCharging()
     {
+        HideSliderCanvas(true);
         fishingSlider.value = 1.0f;   // always restart at 0.2
         direction = 1;
         isStopped = false;
@@ -137,7 +140,11 @@ public class FishingRod : BaseItem
 
     private void ReleaseCharge()
     {
-        StartFishing((fishingSlider.value + 1));
+        StartFishing(1.25f);
+        if (fishingSlider.value >= 1.90f)
+        {
+            fishingSlider.value = 2f;
+        }
         thrownMultipier = fishingSlider.value;
         isCharging = false;
     }
@@ -258,7 +265,7 @@ public class FishingRod : BaseItem
     // ----------------- GETTERS SETTER -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
-    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide  ? 0 : 1;
+    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide ? 1 : 0;
     public Transform GetBaitTransform() => baitTransform;
     public FishCollectUI GetFishCollectUI() => fishCollectUI;
     public void SetIsRecalling(bool isRecall) => isRecalling = isRecall;

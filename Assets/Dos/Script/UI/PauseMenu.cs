@@ -6,23 +6,51 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private CanvasGroup pauseMenuCanvasGroup;
     bool isPaused = false;
+
+    private void Start()
+    {
+        pauseMenuCanvasGroup.alpha = 0;
+        pauseMenuCanvasGroup.interactable = false;
+        pauseMenuCanvasGroup.blocksRaycasts = false;
+    }
+
     private void Update()
     {
-        if (UIManager.Instance.GetCurrentState() != currentState.UI
-            && Input.GetKeyDown(KeyCode.Escape))
+        // ตรวจสอบแค่ปุ่ม Esc
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            isPaused = true;
-            pauseMenu.SetActive(true);
-            UIManager.Instance.ChangeState(currentState.UI);
-        }
-        else if (UIManager.Instance.GetCurrentState() == currentState.UI
-                 && Input.GetKeyDown(KeyCode.Escape))
-        {
-            isPaused = false;
-            pauseMenu.SetActive(false);
-            UIManager.Instance.ChangeState(currentState.None);
+            // --- ตรรกะใหม่ ---
+
+            // กรณีที่ 1: ถ้า Pause Menu "เปิดอยู่"
+            if (isPaused)
+            {
+                // Action: ปิด Pause Menu
+                isPaused = false;
+                pauseMenuCanvasGroup.alpha = 0;
+                pauseMenuCanvasGroup.interactable = false;
+                pauseMenuCanvasGroup.blocksRaycasts = false;
+                UIManager.Instance.ChangeState(currentState.None);
+            }
+            // กรณีที่ 2: ถ้า Pause Menu "ยังไม่เปิด"
+            else
+            {
+                // Action: "ถาม" UIManager ก่อนว่าเปิดได้ไหม
+                // (CanOpenPauseMenu จะเช็ค State == None และ เช็ค Buffer Time ให้เรา)
+                if (UIManager.Instance.CanOpenPauseMenu())
+                {
+                    // ถ้าเปิดได้ (เราอยู่ในเกมปกติ ไม่ใช่เพิ่งปิด Shop)
+                    // Action: เปิด Pause Menu
+                    isPaused = true;
+                    pauseMenuCanvasGroup.alpha = 1;
+                    pauseMenuCanvasGroup.interactable = true;
+                    pauseMenuCanvasGroup.blocksRaycasts = true;
+                    UIManager.Instance.ChangeState(currentState.UI);
+                }
+                // ถ้าเปิดไม่ได้ (เช่น เพิ่งปิด Shop/Inventory มา)
+                // ... ก็ไม่ต้องทำอะไร (ปุ่ม Esc จะถูก "ซับ" ไป)
+            }
         }
     }
 

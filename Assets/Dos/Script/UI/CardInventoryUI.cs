@@ -11,7 +11,7 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] private TMP_Text value;
     [SerializeField] private TMP_Text name;
 
-    private bool selected;
+    public bool selected;
     public void UpdateCardUI(Fish fish)
     {
         baseFish = fish;

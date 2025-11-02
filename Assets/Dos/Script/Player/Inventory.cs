@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Singleton `Inventory` นี้จะจัดการทั้ง "ข้อมูล" (Data) และ "การสั่งเปิด/ปิด" UI (View Logic)
 public class Inventory : Singleton<Inventory>
 {
+    [Header("Data")]
     [SerializeField] private List<Fish> allFish;
     [SerializeField] private List<Bait> allBait = new List<Bait>();
     [SerializeField] private FishingRod currentRod;
@@ -24,14 +26,19 @@ public class Inventory : Singleton<Inventory>
     public FishingRod CurrentRod => currentRod;
 
     [SerializeField] private bool _isEquipRod; // backing field
-
     private int currentUpgradeTier = 1;
 
+    [Header("State")]
+    [Tooltip("สถานะว่า Inventory UI เปิดอยู่หรือไม่ (ควบคุมโดยสคริปต์นี้)")]
+    private bool isInventoryOpen = false;
+
+    // (Property `isEquipRod` เดิมของคุณยังคงอยู่)
     public bool isEquipRod
     {
         get { return _isEquipRod; }
         set
         {
+            // ตรรกะเดิม: ห้ามสลับเบ็ดถ้ากำลังขว้าง หรือ UI เปิดอยู่
             if(currentRod.getIsThrown() || UIManager.Instance.GetCurrentState() == currentState.UI)
                 return;
             _isEquipRod = value;
@@ -43,22 +50,54 @@ public class Inventory : Singleton<Inventory>
         }
     }
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         maxSlots = 20 + (currentUpgradeTier * 10);
-        isEquipRod = true;
+        isEquipRod = true; // (เหมือนเดิม)
+        isInventoryOpen = false; // (สถานะเริ่มต้น)
     }
 
-    // Update is called once per frame
+    // --- นี่คือ UPDATE LOOP ที่อัปเดตใหม่ ---
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        // --- 1. ตรรกะการ "เปิด" Inventory (ด้วย Tab) ---
+        // (เช็ค: กด Tab, Inventory ยังไม่เปิด, และเราอยู่ในเกมปกติ)
+        if (Input.GetKeyDown(KeyCode.Tab) && !isInventoryOpen && 
+            UIManager.Instance.GetCurrentState() == currentState.None)
         {
-            isEquipRod = !isEquipRod;
+            // (ห้ามเปิดถ้ากำลังขว้างเบ็ด)
+            if (currentRod.getIsThrown())
+                return; 
+            
+            // เปิด Inventory (ใช้ `true` เหมือนกับ `ShipStorage`)
+            InventoryUI.Instance.CreateCardUI(true);
+            isInventoryOpen = true;
+            return; // จบการทำงานในเฟรมนี้
+        }
+
+        // --- 2. ตรรกะการ "ปิด" Inventory (ด้วย Esc) ---
+        // (เช็ค: กด Esc และ Inventory "เปิดอยู่" โดยสคริปต์นี้)
+        if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) && isInventoryOpen)
+        {
+            // ปิด Inventory (ใช้ `InventorySource.Ship` เหมือนกับ `ShipStorage`)
+            InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+            isInventoryOpen = false;
+            return; // จบการทำงานในเฟรมนี้
+        }
+        
+        // --- 3. ตรรกะการ "อัปเกรด" (ด้วย R) ---
+        // (ตรรกะนี้ดึงมาจาก `ShipStorage`)
+        // (เช็ค: Inventory ต้อง "เปิดอยู่" และ กด R)
+        if (isInventoryOpen && Input.GetKeyDown(KeyCode.R) && 
+            PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
+        {
+            PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
+            InventoryUI.Instance.UpdateText();
+            Inventory.Instance.UpgradeTier(); // (เรียกฟังก์ชัน Upgrade ที่มีอยู่แล้ว)
         }
     }
+
+    // --- (ฟังก์ชันอื่นๆ ทั้งหมดเหมือนเดิม) ---
 
     public void UpdateCurrentBait()
     {
@@ -72,6 +111,7 @@ public class Inventory : Singleton<Inventory>
             allFish.Add(fish);
         if (fish != null)
         {
+            // (โค้ด Encyclopedia ของคุณยังอยู่ครบ)
             EncyclopediaManager.Instance.SubmitFish(fish);
         }
     }
@@ -87,6 +127,12 @@ public class Inventory : Singleton<Inventory>
             return;
         currentUpgradeTier++;
         maxSlots = 20 + (currentUpgradeTier * 10);
+        
+        // (แนะนำ) อัปเดต Text หลังจากอัปเกรด
+        if (isInventoryOpen)
+        {
+            InventoryUI.Instance.UpdateText();
+        }
     }
 
     public void AddBait(BaseBait baseBait, int amount = 1)
@@ -95,7 +141,6 @@ public class Inventory : Singleton<Inventory>
 
         if (existing == null)
         {
-            // Create a new entry
             Bait newBait = new Bait(baseBait, amount);
             allBait.Add(newBait);
             currentBait = newBait;
@@ -103,11 +148,12 @@ public class Inventory : Singleton<Inventory>
         }
         else
         {
-            // Add to existing
             existing.amount += amount;
         }
         currentBait = existing;
     }
+    
+    // (ฟังก์ชัน Save/Load เหมือนเดิม)
     public InventoryData GetSaveData()
     {
         InventoryData data = new InventoryData();
@@ -115,14 +161,12 @@ public class Inventory : Singleton<Inventory>
         data.currentUpgradeTier = this.currentUpgradeTier;
         data.currentBaitName = (currentBait != null) ? currentBait.Name : string.Empty;
 
-        // แปลง List<Fish> (Runtime) เป็น List<FishData> (Save)
         data.allFish = new List<FishData>();
         foreach (Fish fish in allFish)
         {
             data.allFish.Add(new FishData(fish));
         }
 
-        // แปลง List<Bait> (Runtime) เป็น List<BaitData> (Save)
         data.allBait = new List<BaitData>();
         foreach (Bait bait in allBait)
         {
@@ -134,62 +178,47 @@ public class Inventory : Singleton<Inventory>
 
     public void LoadData(InventoryData data)
     {
-        // 1. โหลดข้อมูลพื้นฐาน
         this.maxSlots = data.maxSlots;
         this.currentUpgradeTier = data.currentUpgradeTier;
 
-        // 2. ล้างข้อมูลเก่า
         allFish.Clear();
         allBait.Clear();
 
-        // 3. สร้าง List<Fish> คืนจาก List<FishData>
         FishManager fishDB = FishManager.Instance;
         foreach (FishData fishData in data.allFish)
         {
             BaseFish baseFish = fishDB.GetBaseFishByName(fishData.baseFishName);
             if (baseFish != null)
             {
-                // สร้าง Fish Instance ใหม่
-                // เราต้องหา Dummy Bait มาใส่ใน constructor ชั่วคราว
-                // หรือปรับ Constructor ของ Fish ให้ยืดหยุ่นกว่านี้
-                
-                // (สมมติว่าคุณมีเหยื่อ "baitA" เป็นเหยื่อพื้นฐาน)
                 BaseBait dummyBaseBait = BaitManager.Instance.GetBaseBaitByName("baitA");
                 if (dummyBaseBait == null) {
                     Debug.LogError("Dummy bait 'baitA' not found for loading fish!");
                     continue;
                 }
+                Bait dummyBait = new Bait(dummyBaseBait, 0);
                 
-                Bait dummyBait = new Bait(dummyBaseBait, 0); //
-                
-                //
-                Fish newFish = new Fish(baseFish, 1f, 1f, dummyBait); // สร้างด้วยค่า dummy
-                newFish.Weight = fishData.weight; // **Override น้ำหนักที่ Save ไว้**
+                Fish newFish = new Fish(baseFish, 1f, 1f, dummyBait);
+                newFish.Weight = fishData.weight; 
                 allFish.Add(newFish);
             }
         }
 
-        // 4. สร้าง List<Bait> คืนจาก List<BaitData>
         BaitManager baitDB = BaitManager.Instance;
         foreach (BaitData baitData in data.allBait)
         {
             BaseBait baseBait = baitDB.GetBaseBaitByName(baitData.baseBaitName);
             if (baseBait != null)
             {
-                Bait newBait = new Bait(baseBait, baitData.amount); //
+                Bait newBait = new Bait(baseBait, baitData.amount);
                 allBait.Add(newBait);
-
-                // ตั้งค่าเหยื่อที่สวมใส่
                 if (baitData.baseBaitName == data.currentBaitName)
                 {
-                    // อย่าใช้ property "currentBait" ตรงๆ ตอน Load เพราะมันอาจจะเรียก UpdateCurrentBait() เร็วไป
                     _currentBait = newBait; 
                 }
             }
         }
         
-        // อัปเดต UI ตอนสุดท้าย
-        UpdateCurrentBait(); //
+        UpdateCurrentBait();
         Debug.Log("Inventory loaded.");
     }
 
@@ -198,5 +227,4 @@ public class Inventory : Singleton<Inventory>
     public int GetMaxSlots() => maxSlots;
     public int UpgradeCost() => (int)((currentUpgradeTier * 1.5f) * 100);
     public List<Bait> GetAllBait() => allBait;
-
 }

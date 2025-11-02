@@ -46,7 +46,7 @@ public class SaveSlotUI : MonoBehaviour
         else
         {
             // --- กรณีมี "Save Data" ---
-            newSaveText.gameObject.SetActive(false);
+            newSaveText.text = $"Slot {slotId}";
             dataDisplayGroup.SetActive(true);
 
             // ดึงข้อมูลเงินมาแสดง

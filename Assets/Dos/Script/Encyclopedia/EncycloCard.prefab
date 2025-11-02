@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Weight
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ced81817a400f149bfe5b8156d4be67, type: 2}
+  m_sharedMaterial: {fileID: 4138042311249663236, guid: 5ced81817a400f149bfe5b8156d4be67, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -353,8 +353,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5ced81817a400f149bfe5b8156d4be67, type: 2}
+  m_sharedMaterial: {fileID: 4138042311249663236, guid: 5ced81817a400f149bfe5b8156d4be67, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -474,6 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ebbe15e569943f4ca29dc616a12ea18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fishID: 
   fishPhoto: {fileID: 787359086969675057}
   fishNameText: {fileID: 1792472883367076055}
   fishWeightText: {fileID: 4318866816199992029}
