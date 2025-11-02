@@ -28,8 +28,8 @@ public class FishingRod : BaseItem
 
     [SerializeField] private GameObject newMinigame;
     [SerializeField] private CanvasGroup sliderCanvasGroup;
-    
 
+    private float thrownMultipier = 1f;
     private Rigidbody bait;
     private LineRenderer lineRenderer;
     private FishCollectUI fishCollectUI;
@@ -57,9 +57,9 @@ public class FishingRod : BaseItem
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         
-        fishingSlider.minValue = 0;
-        fishingSlider.maxValue = 1;
-        fishingSlider.value = 0;
+        fishingSlider.minValue = 1;
+        fishingSlider.maxValue = 2;
+        fishingSlider.value = 1;
     }
 
     private void Update()
@@ -108,7 +108,7 @@ public class FishingRod : BaseItem
 
     private void StartCharging()
     {
-        fishingSlider.value = 0.2f;   // always restart at 0.2
+        fishingSlider.value = 1.0f;   // always restart at 0.2
         direction = 1;
         isStopped = false;
         isCharging = true;
@@ -121,44 +121,24 @@ public class FishingRod : BaseItem
             fishingSlider.value += direction * chargeSpeed * Time.deltaTime;
 
             // reached top → go down
-            if (direction == 1 && fishingSlider.value >= 1f)
+            if (direction == 1 && fishingSlider.value >= 2f)
             {
-                fishingSlider.value = 1f;
+                fishingSlider.value = 2f;
                 direction = -1;
             }
             // reached bottom → stop completely
-            else if (direction == -1 && fishingSlider.value <= 0f)
+            else if (direction == -1 && fishingSlider.value <= 1f)
             {
-                fishingSlider.value = 0f;
-                isStopped = true; // stop here until release
+                fishingSlider.value = 1f;
+                direction = 1;
             }
         }
     }
 
     private void ReleaseCharge()
     {
-        // Example "sweet spots"
-        if (fishingSlider.value >= 0.06 && fishingSlider.value < 0.1f)
-        {
-            StartFishing(1.25f);
-            Debug.Log("Good");
-        }
-        else if (fishingSlider.value >= 0.1f && fishingSlider.value < 0.15f)
-        {
-            StartFishing(1.5f);
-            Debug.Log("Perfect");
-        }
-        else if (fishingSlider.value >= 0.15f && fishingSlider.value < 0.18f)
-        {
-            StartFishing(1.25f);
-            Debug.Log("Good");
-        }
-        else
-        {
-            Debug.Log("Bad");
-            fishingSlider.value = 0.20f;
-        }
-
+        StartFishing((fishingSlider.value + 1));
+        thrownMultipier = fishingSlider.value;
         isCharging = false;
     }
 
@@ -221,7 +201,7 @@ public class FishingRod : BaseItem
         bait.isKinematic = true;
         if (minigame == null && !isRecalling && isDoneMinigame)
         {
-            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,Inventory.Instance.currentBait);
+            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
             currentFish = caughtFish;
             minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
             minigame.GetComponent<newMinigame>().AssignFish(currentFish);

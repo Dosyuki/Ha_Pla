@@ -9,13 +9,13 @@ public class FishManager : Singleton<FishManager>
     {
         BuildLookupDictionary();
     }
-    public Fish RandomFish(float luckMultiplier = 1f, float weightMultiplier = 1f, Bait bait = null)
+    public Fish RandomFish(float luckMultiplier = 1f, float weightMultiplier = 1f, float thrownLuck = 1f, Bait bait = null)
     {
         float totalChance = 0f;
 
         // รวมโอกาสสุ่ม โดยใช้ LuckMultiplier ช่วยเพิ่มโอกาสปลาหายาก
         Dictionary<BaseFish, float> adjustedChances = new Dictionary<BaseFish, float>();
-
+        float newLuckMultipier = luckMultiplier + bait.LuckMultiplier +  thrownLuck;
         foreach (var fish in fishPrefabsRedZone)
         {
             float adjustedChance = fish.DropChance;
@@ -27,13 +27,13 @@ public class FishManager : Singleton<FishManager>
                     adjustedChance *= 1f; // Luck ไม่ช่วยปลาธรรมดา
                     break;
                 case FishRarity.Rare:
-                    adjustedChance *= Mathf.Lerp(1f, luckMultiplier, 0.6f);
+                    adjustedChance *= Mathf.Lerp(1f, newLuckMultipier, 0.6f);
                     break;
                 case FishRarity.Epic:
-                    adjustedChance *= luckMultiplier;
+                    adjustedChance *= newLuckMultipier;
                     break;
                 case FishRarity.Legendary:
-                    adjustedChance *= luckMultiplier * 1.5f;
+                    adjustedChance *= newLuckMultipier * 1.5f;
                     break;
             }
 
