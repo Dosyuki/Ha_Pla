@@ -38,9 +38,10 @@ public class Fish
         ProgressRateDecrease = baseFish.ProgressRateDecrease;
 
         float[] dynamicCon = TimeSystem.Instance.GetDynamicCondition();
+        PlayerStats py  = PlayerStats.Instance;
 
-        float minWeight = baseFish.Weight * 0.8f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1];
-        float maxWeight = baseFish.Weight * 1.2f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1];
+        float minWeight = baseFish.Weight * 0.8f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1] * py.GetWeightMultiplier();
+        float maxWeight = baseFish.Weight * 1.2f * weightMultiplier * bait.WeightMultiplier * dynamicCon[1] * py.GetWeightMultiplier();
         Weight = Random.Range(minWeight, maxWeight);
     }
 

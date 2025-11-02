@@ -95,6 +95,7 @@ public class FishCollectUI : MonoBehaviour
         {
             Debug.LogWarning("ไม่สามารถบันทึกรูปปลาได้ (Photo Capture Setup อาจจะยังไม่ได้ตั้งค่า)");
         }
+        SaveManager.Instance.SaveGame(GameSession.Instance.CurrentSlotId);
     }
 
     /// <summary>
@@ -117,6 +118,8 @@ public class FishCollectUI : MonoBehaviour
         fishStats = null;
         gameObject.SetActive(false);
         UIManager.Instance.ChangeState(currentState.None);
+        SaveManager.Instance.SaveGame(GameSession.Instance.CurrentSlotId);
+
     }
 
     public void DropFish()
@@ -126,6 +129,8 @@ public class FishCollectUI : MonoBehaviour
         Inventory.Instance.CurrentRod.currentFish = null;
         fishStats = null;
         UIManager.Instance.ChangeState(currentState.None);
+        SaveManager.Instance.SaveGame(GameSession.Instance.CurrentSlotId);
+
     }
 
     // -------------------------------------------------------------------

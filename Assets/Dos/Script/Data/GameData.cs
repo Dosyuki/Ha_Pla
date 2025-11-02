@@ -17,6 +17,8 @@ public class GameData
 public class PlayerStatsData
 {
     public float money;
+    public float luckMultiplier; 
+    public float weightMultiplier;
     // คุณสามารถเพิ่ม Vector3 playerPosition ที่นี่ได้ถ้าต้องการ Save ตำแหน่ง
 }
 

@@ -12663,6 +12663,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Money: 50
+  LuckMultiplier: 1
+  WeightMultiplier: 1
 --- !u!208 &1538086865
 NavMeshObstacle:
   m_ObjectHideFlags: 0

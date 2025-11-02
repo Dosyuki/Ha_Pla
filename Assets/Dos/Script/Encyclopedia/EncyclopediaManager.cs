@@ -12,7 +12,7 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
 
     // เราต้องรอให้ FishManager พร้อมก่อน
     private bool isInitialized = false;
-
+    private bool hasClaimedZoneAReward = false;
     // ฟังก์ชันนี้จะทำงานหลังจาก Awake() ของทุกสคริปต์
     private void Start()
     {
@@ -53,7 +53,65 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
     }
     
     private EncyclopediaData pendingLoadData; // ตัวแปรพักข้อมูลที่ Load มา
+// --- *** ฟังก์ชันใหม่ *** ---
+    /// <summary>
+    /// ตรวจสอบว่าปลาใน Zone A ครบหรือยัง และให้รางวัลถ้ายังไม่เคยรับ
+    /// </summary>
+    public void CheckForZoneACompletion()
+    {
+        // 1. ถ้ายังไม่พร้อม หรือ รับรางวัลไปแล้ว -> ไม่ต้องทำอะไร
+        if (!isInitialized || hasClaimedZoneAReward)
+        {
+            return;
+        }
 
+        // 2. ตรวจสอบปลา "ทุกตัว" ในฐานข้อมูล
+        foreach (EncyclopediaEntry entry in entryDatabase.Values)
+        {
+            // ถ้าเจอตัวไหนที่ยังไม่ถูกค้นพบ (isDiscovered == false)
+            if (!entry.isDiscovered)
+            {
+                // ยังไม่ครบ -> ออกจากฟังก์ชัน
+                return; 
+            }
+        }
+
+        // 3. ถ้าโค้ดวิ่งมาถึงตรงนี้ได้ = "ยินดีด้วย คุณเก็บครบแล้ว!"
+        Debug.Log("สารานุกรม Zone A ครบแล้ว! กำลังมอบรางวัล...");
+        
+        // 4. ตั้งธงว่า "รับรางวัลแล้ว" (สำคัญมาก!)
+        hasClaimedZoneAReward = true;
+        
+        // 5. เรียกฟังก์ชันให้รางวัล
+        GiveZoneAReward();
+    }
+
+    // --- *** ฟังก์ชันใหม่ *** ---
+    private void GiveZoneAReward()
+    {
+        // --- นี่คือส่วนที่คุณใส่รางวัลได้เลย ---
+
+        // ตัวอย่าง: ให้เงิน 1000 Fishlars
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.AddWeightMultiplier(0.2f);
+            Debug.Log("REWARD: ได้รับ 1000 Fishlars!");
+        }
+
+        // ตัวอย่าง: ให้เหยื่อพิเศษ 5 ชิ้น (เช่น baitD)
+        if (BaitManager.Instance != null && Inventory.Instance != null)
+        {
+            // (เราต้องมีฟังก์ชัน GetBaseBaitByName ใน BaitManager ก่อน)
+            BaseBait specialBait = BaitManager.Instance.GetBaseBaitByName("baitD");
+            if (specialBait != null)
+            {
+                Inventory.Instance.AddBait(specialBait, 5); //
+                Debug.Log("REWARD: ได้รับ BaitD 5 ชิ้น!");
+            }
+        }
+
+        // (คุณสามารถเรียก UI Popup แสดงความยินดีได้ที่นี่)
+    }
     /// <summary>
     /// ฟังก์ชันหลัก! ใช้สำหรับส่งปลาที่จับได้ใหม่มาตรวจสอบ
     /// </summary>
@@ -65,32 +123,32 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
             return;
         }
         
-        // 1. ตรวจสอบว่ามีปลาชนิดนี้ในฐานข้อมูลหรือไม่
         if (entryDatabase.TryGetValue(fish.Name, out EncyclopediaEntry entry))
         {
-            // 2. ตรวจสอบว่าค้นพบครั้งแรก หรือ น้ำหนักมากกว่าเดิม
+            bool wasAlreadyDiscovered = entry.isDiscovered; // เก็บสถานะ "ก่อน" อัปเดต
+            
             if (!entry.isDiscovered || fish.Weight > entry.bestWeight)
             {
                 Debug.Log($"Encyclopedia: อัปเดตสถิติ {fish.Name}! น้ำหนักใหม่: {fish.Weight:F2}kg");
                 
-                // 3. อัปเดตข้อมูล
                 entry.isDiscovered = true;
                 entry.bestWeight = fish.Weight;
                 
-                // 4. (สำคัญ) อัปเดตรูปภาพ ถ้าปลาตัวนี้มีการถ่ายรูปมา
                 if (!string.IsNullOrEmpty(fish.photoGUID))
                 {
-                    // (เราจะลบรูปเก่าทิ้ง เพื่อประหยัดพื้นที่)
                     DeleteOldPhoto(entry.bestPhotoGUID);
                     entry.bestPhotoGUID = fish.photoGUID;
                 }
-                else if (entry.isDiscovered && string.IsNullOrEmpty(entry.bestPhotoGUID))
-                {
-                    // เคสพิเศษ: จับได้, หนักกว่าเดิม, แต่ *ไม่ได้ถ่ายรูป*
-                    // เราจะไม่ลบรูปเก่า (ถ้ามี)
-                    // แต่ถ้ายังไม่เคยมีรูปเลย ก็ปล่อยว่างไว้
-                }
             }
+            
+            // --- *** เพิ่มส่วนนี้ *** ---
+            // ถ้าปลาตัวนี้ "เพิ่งจะถูกค้นพบ" (ก่อนหน้านี้เป็น false)
+            // ให้เราตรวจสอบว่าครบหรือยัง
+            if (!wasAlreadyDiscovered && entry.isDiscovered)
+            {
+                CheckForZoneACompletion();
+            }
+            // --- *** จบส่วนที่เพิ่ม *** ---
         }
     }
 
@@ -101,8 +159,8 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
         if (!isInitialized) InitializeDatabase();
 
         EncyclopediaData data = new EncyclopediaData();
-        // แปลง Dictionary กลับเป็น List เพื่อให้ JsonUtility เซฟได้
         data.entries = entryDatabase.Values.ToList();
+        data.hasClaimedZoneAReward = this.hasClaimedZoneAReward; // <-- *** เพิ่มบรรทัดนี้ ***
         return data;
     }
 
@@ -111,10 +169,12 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
         if (data == null) 
         {
             Debug.Log("Encyclopedia: ไม่พบข้อมูล Save (New Game).");
-            return; // ไม่ต้องทำอะไร (เริ่มเกมใหม่)
+            this.hasClaimedZoneAReward = false; // <-- *** เพิ่มบรรทัดนี้ ***
+            return;
         }
 
-        pendingLoadData = data; // เก็บข้อมูลไว้ก่อน
+        pendingLoadData = data;
+        this.hasClaimedZoneAReward = data.hasClaimedZoneAReward; // <-- *** เพิ่มบรรทัดนี้ ***
         TryReapplyLoadedData();
     }
     
