@@ -147,6 +147,7 @@ public class FishingRod : BaseItem
         }
         thrownMultipier = fishingSlider.value;
         isCharging = false;
+        HideSliderCanvas(true);
     }
 
     // ----------------- FISHING ACTIONS -----------------
