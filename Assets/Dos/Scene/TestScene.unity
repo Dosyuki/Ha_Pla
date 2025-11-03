@@ -20,8 +20,8 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.43392915, g: 0.35042414, b: 0.10438861, a: 1}
-  m_AmbientEquatorColor: {r: 0.43392915, g: 0.35042414, b: 0.10438861, a: 1}
+  m_AmbientSkyColor: {r: 0.7002106, g: 0.7692182, b: 0.39406914, a: 1}
+  m_AmbientEquatorColor: {r: 0.7002106, g: 0.7692182, b: 0.39406914, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
@@ -5657,7 +5657,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.7153906, g: 0.58304024, b: 0.17884766, a: 1}
+  m_Color: {r: 0.88207006, g: 0.74971026, b: 0.3454889, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -5720,7 +5720,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 541214620}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.25881907, y: 0, z: 0, w: 0.9659258}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13864,7 +13864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sun: {fileID: 541214621}
-  timeOfDay: 6
+  timeOfDay: 8
   sunRotationSpeed: 60
   sleepTimeMultipier: 8
   skyColor:
@@ -17950,7 +17950,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1969177447}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.25881907, w: 0.9659258}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
