@@ -119,4 +119,37 @@ public class SaveManager : Singleton<SaveManager>
             Debug.LogError($"Error creating initial save file: {ex.Message}");
         }
     }
+    public bool DeleteSaveData(int slotId)
+    {
+        // 1. หาที่อยู่ของไฟล์ .json
+        string jsonPath = GetSavePath(slotId);
+        
+        // 2. หาที่อยู่ของ "โฟลเดอร์รูปภาพ" (ที่เราออกแบบไว้ตอนทำระบบถ่ายรูป)
+        string photoFolderPath = Path.Combine(Application.persistentDataPath, $"SlotPhotos_{slotId}");
+
+        try
+        {
+            // 3. ลบไฟล์ .json (ถ้ามี)
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+                Debug.Log($"ลบไฟล์ SaveSlot_{slotId}.json สำเร็จ");
+            }
+            
+            // 4. ลบ "ทั้งโฟลเดอร์" รูปภาพ (ถ้ามี)
+            if (Directory.Exists(photoFolderPath))
+            {
+                // true = ลบทุกอย่างที่อยู่ข้างในโฟลเดอร์นี้ด้วย
+                Directory.Delete(photoFolderPath, true); 
+                Debug.Log($"ลบโฟลเดอร์ {photoFolderPath} สำเร็จ");
+            }
+            
+            return true; // ลบสำเร็จ (หรือไม่มีอะไรให้ลบ)
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"เกิดข้อผิดพลาดขณะลบ Slot {slotId}: {ex.Message}");
+            return false;
+        }
+    }
 }

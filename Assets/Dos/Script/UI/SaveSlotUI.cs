@@ -16,6 +16,7 @@ public class SaveSlotUI : MonoBehaviour
     [SerializeField] private TMP_Text moneyText; 
     [SerializeField] private TMP_Text newSaveText;
     [SerializeField] private NameInputUI nameInputUI;
+    [SerializeField] private Button deleteButton;
     private GameData slotData; // เก็บข้อมูลที่ Peek มา
 
     private void OnEnable()
@@ -28,6 +29,7 @@ public class SaveSlotUI : MonoBehaviour
     private void Start()
     {
         slotButton.onClick.AddListener(OnClick_Slot);
+        deleteButton.onClick.AddListener(OnClick_Delete);
     }
 
     private void UpdateSlotDisplay()
@@ -74,6 +76,29 @@ public class SaveSlotUI : MonoBehaviour
             MainMenu.slotToLoad = slotId; //
             
             SceneManager.LoadScene(sceneToLoad);
+        }
+    }
+    public void OnClick_Delete()
+    {
+        // (แนะนำ: คุณควรทำหน้าต่าง "ยืนยันการลบ" ตรงนี้ก่อน)
+        
+        Debug.Log($"กำลังลบ Save Slot {slotId}...");
+
+        // 1. สั่ง SaveManager ให้ลบไฟล์
+        bool deleted = SaveManager.Instance.DeleteSaveData(slotId);
+
+        if (deleted)
+        {
+            // 2. ถ้าลบสำเร็จ ให้อัปเดต UI ของ Slot นี้ใหม่ทันที
+            // เราแค่แอบดูข้อมูลอีกครั้ง (ซึ่งตอนนี้ควรจะเป็น null)
+            slotData = SaveManager.Instance.PeekSaveData(slotId);
+            
+            // 3. สั่งให้ UI วาดใหม่ (ตอนนี้มันจะแสดงเป็น "New Game")
+            UpdateSlotDisplay();
+        }
+        else
+        {
+            Debug.LogWarning($"ลบ Save Slot {slotId} ไม่สำเร็จ (อาจไม่มีไฟล์)");
         }
     }
 }
