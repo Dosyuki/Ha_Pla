@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public class EncyclopediaManager : Singleton<EncyclopediaManager>
 {
     private Dictionary<string, EncyclopediaEntry> entryDatabase;
-
+    public static event Action OnDatabaseUpdated;
     // เราต้องรอให้ FishManager พร้อมก่อน
     private bool isInitialized = false;
     private bool hasClaimedZoneAReward = false;
@@ -133,6 +134,7 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
             {
                 CheckForZoneACompletion();
             }
+            OnDatabaseUpdated?.Invoke();
         }
     }
 
@@ -179,6 +181,7 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
         }
         
         pendingLoadData = null; // เคลียร์ข้อมูลที่พักไว้
+        OnDatabaseUpdated?.Invoke();
     }
 
     // --- ฟังก์ชัน Utility ---

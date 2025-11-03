@@ -96,6 +96,7 @@ public class FishCollectUI : MonoBehaviour
             Debug.LogWarning("ไม่สามารถบันทึกรูปปลาได้ (Photo Capture Setup อาจจะยังไม่ได้ตั้งค่า)");
         }
         SaveManager.Instance.SaveGame(GameSession.Instance.CurrentSlotId);
+        PickUpFish();
     }
 
     /// <summary>
