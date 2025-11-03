@@ -86,8 +86,8 @@ public class Inventory : Singleton<Inventory>
             PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
         {
             PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
-            InventoryUI.Instance.UpdateText();
             UpgradeTier();
+            InventoryUI.Instance.UpdateText();
         }
     }
 

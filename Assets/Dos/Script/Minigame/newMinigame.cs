@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class newMinigame : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class newMinigame : MonoBehaviour
 
     [Header("Score")] [SerializeField] private float maxProgress;
     [SerializeField] private float progress;
-    [SerializeField] private TMP_Text progressText;
+    [SerializeField] private Slider  progressSlider;
     
     [Header("ProgressRate")]
     [SerializeField] private float progressRateIncrease;
@@ -41,7 +42,6 @@ public class newMinigame : MonoBehaviour
         SpawnFish();
         PickNewTarget(); // set first target
         UIManager.Instance.ChangeState(currentState.UI);
-        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
     }
 
     private void Update()
@@ -87,8 +87,7 @@ public class newMinigame : MonoBehaviour
             progress -= Time.deltaTime * progressRateDecrease;
         }
         progress = Mathf.Clamp(progress,0f,50f);
-        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
-
+        progressSlider.value = progress;
         if (progress >= maxProgress)
         {
             // Spawn Fish and Yeet Fish

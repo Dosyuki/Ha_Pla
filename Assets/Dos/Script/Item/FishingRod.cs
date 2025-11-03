@@ -61,7 +61,7 @@ public class FishingRod : BaseItem
         fishingSlider.maxValue = 2;
         fishingSlider.value = 1;
         
-        HideSliderCanvas(true);
+        HideSliderCanvas(false);
     }
 
     private void Update()
@@ -110,7 +110,7 @@ public class FishingRod : BaseItem
 
     private void StartCharging()
     {
-        HideSliderCanvas(true);
+        HideSliderCanvas(false);
         fishingSlider.value = 1.0f;   // always restart at 0.2
         direction = 1;
         isStopped = false;

@@ -68,9 +68,9 @@ public class BaitInventoryPanel : Singleton<BaitInventoryPanel>
         {
             BaitInventoryUI card = child.GetComponent<BaitInventoryUI>();
             if (card.baseBait == Inventory.Instance.currentBait)
-                card.GetComponent<Outline>().enabled = true;
+                card.GetComponent<Image>().sprite = card.selectedSprite;
             else
-                card.GetComponent<Outline>().enabled = false;
+                card.GetComponent<Image>().sprite = card.normalSprite;
         }
     }
 }

@@ -10,6 +10,7 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] private TMP_Text weight;
     [SerializeField] private TMP_Text value;
     [SerializeField] private TMP_Text name;
+    [SerializeField] private Sprite selectedSprite;
 
     public bool selected;
     public void UpdateCardUI(Fish fish)
@@ -28,13 +29,13 @@ public class CardInventoryUI : MonoBehaviour
             return;
         if (!selected)
         {
-            GetComponent<Outline>().enabled = true;
+            sprite.sprite = selectedSprite;
             selected = true;
             ShopManager.Instance.AddSelectedFish(baseFish);
         }
         else
         {
-            GetComponent<Outline>().enabled = false;
+            sprite.sprite = baseFish.SpriteModel;
             selected = false;
             ShopManager.Instance.RemoveSelectedFish(baseFish);
         }

@@ -188,6 +188,7 @@ MonoBehaviour:
   weight: {fileID: 5578130113237693047}
   value: {fileID: 8146761132554051540}
   name: {fileID: 1607641094334082247}
+  selectedSprite: {fileID: 21300000, guid: 8cd3d06c9143d0f4f9935a83f8933d21, type: 3}
   selected: 0
 --- !u!114 &-5566748618789288466
 MonoBehaviour:

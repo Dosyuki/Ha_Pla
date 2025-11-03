@@ -234,6 +234,8 @@ MonoBehaviour:
   sprite: {fileID: 2345264728557857309}
   amountText: {fileID: 5578130113237693047}
   name: {fileID: 1607641094334082247}
+  normalSprite: {fileID: 21300000, guid: a4fd9db079f9fef47855e2bb50201aa4, type: 3}
+  selectedSprite: {fileID: 21300000, guid: 8cd3d06c9143d0f4f9935a83f8933d21, type: 3}
 --- !u!114 &7811766767349168907
 MonoBehaviour:
   m_ObjectHideFlags: 0

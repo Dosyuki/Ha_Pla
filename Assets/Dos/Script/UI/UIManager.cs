@@ -27,7 +27,6 @@ public class UIManager : Singleton<UIManager>
                 m_currentState = newState;
                 m_FirstPersonController.SetCanMove(true);
                 m_FirstPersonController.GetMouseLook().SetCursorLock(true);
-                Inventory.Instance.CurrentRod.HideSliderCanvas(false);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = false;
                 break;
