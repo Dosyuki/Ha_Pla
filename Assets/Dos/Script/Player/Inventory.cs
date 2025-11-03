@@ -44,7 +44,7 @@ public class Inventory : Singleton<Inventory>
             if (currentRod != null)
             {
                 currentRod.gameObject.SetActive(value);
-                currentRod.HideSliderCanvas(!value);
+                //currentRod.HideSliderCanvas(!value);
             }
         }
     }

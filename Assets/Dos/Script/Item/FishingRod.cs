@@ -61,7 +61,7 @@ public class FishingRod : BaseItem
         fishingSlider.maxValue = 2;
         fishingSlider.value = 1;
         
-        HideSliderCanvas(false);
+        HideSliderCanvas(true);
     }
 
     private void Update()

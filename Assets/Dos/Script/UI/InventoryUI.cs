@@ -111,13 +111,13 @@ public class InventoryUI : Singleton<InventoryUI>
             if (currentSelection.Contains(card.baseFish))
             {
                 // ถ้าใช่: เปิด Outline และตั้งค่า selected = true
-                card.GetComponent<Outline>().enabled = true;
+                card.GetComponent<Image>().sprite = card.selectedSprite;
                 card.selected = true;
             }
             else
             {
                 // ถ้าไม่ใช่: ปิด Outline และตั้งค่า selected = false
-                card.GetComponent<Outline>().enabled = false;
+                card.GetComponent<Image>().sprite = card.normalSprite;
                 card.selected = false;
             }
         }
