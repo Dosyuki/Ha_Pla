@@ -4,6 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class GameData
 {
+    public string saveSlotName;
     public long lastUpdated;
     public PlayerStatsData playerStats;
     public InventoryData inventory;

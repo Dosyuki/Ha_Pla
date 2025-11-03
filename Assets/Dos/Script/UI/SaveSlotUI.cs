@@ -7,30 +7,26 @@ using UnityEngine.SceneManagement; // ต้องใช้สำหรับเ
 public class SaveSlotUI : MonoBehaviour
 {
     [Header("Slot Config")]
-    [SerializeField] private int slotId; // ตั้งค่าใน Inspector (1, 2, 3, หรือ 4)
-    [SerializeField] private string sceneToLoad = "TestScene"; // ตั้งชื่อ Scene เกมหลักของคุณ
+    [SerializeField] private int slotId; 
+    [SerializeField] private string sceneToLoad = "TestScene"; 
 
     [Header("UI References")]
-    [SerializeField] private Button slotButton; // ตัวปุ่มหลัก
-    [SerializeField] private GameObject dataDisplayGroup; // Object ที่รวบรวม UI ที่มีข้อมูล
-    [SerializeField] private TMP_Text moneyText; // UI Text ที่จะโชว์เงิน
-    [SerializeField] private TMP_Text newSaveText; // UI Text ที่จะโชว์คำว่า "New Save"
-
+    [SerializeField] private Button slotButton; 
+    [SerializeField] private GameObject dataDisplayGroup;
+    [SerializeField] private TMP_Text moneyText; 
+    [SerializeField] private TMP_Text newSaveText;
+    [SerializeField] private NameInputUI nameInputUI;
     private GameData slotData; // เก็บข้อมูลที่ Peek มา
 
-    // ทำงานทุกครั้งที่ Object นี้ถูกเปิด (เช่น เปิดหน้า Load Game)
     private void OnEnable()
     {
-        // 1. แอบดูข้อมูลใน Slot นี้
         slotData = SaveManager.Instance.PeekSaveData(slotId);
 
-        // 2. อัปเดต UI
         UpdateSlotDisplay();
     }
 
     private void Start()
     {
-        // 3. ตั้งค่าให้ปุ่มนี้เรียกฟังก์ชัน OnClick_Slot() เมื่อถูกกด
         slotButton.onClick.AddListener(OnClick_Slot);
     }
 
@@ -38,28 +34,22 @@ public class SaveSlotUI : MonoBehaviour
     {
         if (slotData == null)
         {
-            // --- กรณีเป็น "New Save" ---
             newSaveText.gameObject.SetActive(true);
             newSaveText.text = $"New Game {slotId}";
             dataDisplayGroup.SetActive(false);
         }
         else
         {
-            // --- กรณีมี "Save Data" ---
             newSaveText.text = $"Slot {slotId}";
             dataDisplayGroup.SetActive(true);
 
-            // ดึงข้อมูลเงินมาแสดง
-            // (เราใช้ .playerStats.money จาก GameData ที่เราออกแบบไว้)
+           
             moneyText.text = $"${slotData.playerStats.money:F2}"; 
-            
-            // (คุณสามารถเพิ่มข้อมูลอื่นได้ตามต้องการ เช่น เวลาเล่น, ชื่อตัวละคร ฯลฯ)
+            newSaveText.text = slotData.saveSlotName;
         }
     }
 
-    /// <summary>
-    /// ฟังก์ชันนี้จะทำงานเมื่อผู้เล่น "กด" ปุ่ม Slot นี้
-    /// </summary>
+   
     public void OnClick_Slot()
     {
         
@@ -67,18 +57,23 @@ public class SaveSlotUI : MonoBehaviour
         
         if (slotData == null)
         {
-            // ถ้าไม่มีข้อมูล = เริ่มเกมใหม่
+            if (nameInputUI == null)
+            {
+                Debug.LogError("ยังไม่ได้ตั้งค่า NameInputUI ใน Inspector ของ SaveSlotUI!");
+                return;
+            }
             Debug.Log($"Starting New Game in Slot {slotId}...");
-            MainMenu.slotToLoad = 0; // 0 = New Game [อ้างอิงจาก MainMenu.cs]
+            nameInputUI.Show(slotId);
         }
         else
         {
-            // ถ้ามีข้อมูล = โหลดเกม
             Debug.Log($"Loading Game from Slot {slotId}...");
-            MainMenu.slotToLoad = slotId; // [อ้างอิงจาก MainMenu.cs]
+            
+            // (เฉพาะตอน "Load" เท่านั้น ที่เราจะตั้งค่า GameSession ที่นี่)
+            GameSession.Instance.SetCurrentSlot(slotId);
+            MainMenu.slotToLoad = slotId; //
+            
+            SceneManager.LoadScene(sceneToLoad);
         }
-
-        // โหลด Scene เกมหลัก
-        SceneManager.LoadScene(sceneToLoad);
     }
 }

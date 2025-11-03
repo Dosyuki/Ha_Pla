@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// ตรวจสอบให้แน่ใจว่า GameObject นี้มี Collider ที่เป็น Trigger
 [RequireComponent(typeof(Collider))]
 public class EncyclopediaStation : MonoBehaviour
 {
@@ -28,11 +27,9 @@ public class EncyclopediaStation : MonoBehaviour
             col.isTrigger = true;
         }
 
-        // ซ่อน UI ตอนเริ่ม
         if (pressFPrompt != null) pressFPrompt.alpha = 0;
         
-        // (เราจะไม่ซ่อน encyclopediaCanvasGroup ที่นี่ เพราะมันอาจถูกเปิด/ปิดโดยที่อื่น
-        // เราจะซิงค์สถานะ isOpen กับ alpha ของมันแทน)
+
         if (encyclopediaCanvasGroup == null)
         {
             Debug.LogError("ยังไม่ได้ลาก Encyclopedia Canvas Group มาใส่ใน Inspector!");
@@ -46,12 +43,10 @@ public class EncyclopediaStation : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // เมื่อผู้เล่นเดินเข้ามาในระยะ
         if (other.CompareTag(playerTag))
         {
             isInRange = true;
-            // แสดงปุ่ม "Press F" (ถ้ามี)
-            if (pressFPrompt != null && !isOpen) // ไม่ต้องโชว์ถ้า UI เปิดอยู่
+            if (pressFPrompt != null && !isOpen) 
             {
                 pressFPrompt.alpha = 1;
             }
@@ -60,17 +55,14 @@ public class EncyclopediaStation : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        // เมื่อผู้เล่นเดินออกจากระยะ
         if (other.CompareTag(playerTag))
         {
             isInRange = false;
-            // ซ่อนปุ่ม "Press F"
             if (pressFPrompt != null)
             {
                 pressFPrompt.alpha = 0;
             }
 
-            // ถ้าผู้เล่นเดินหนีในขณะที่ UI เปิดอยู่ ให้ปิด UI อัตโนมัติ
             if (isOpen)
             {
                 CloseEncyclopedia();
@@ -80,14 +72,12 @@ public class EncyclopediaStation : MonoBehaviour
 
     private void Update()
     {
-        // 1. ตรวจสอบการ "เปิด"
-        // (ต้องอยู่ในระยะ, กด F, และ UI ยังไม่เปิด)
+
         if (isInRange && Input.GetKeyDown(KeyCode.F) && !isOpen)
         {
             OpenEncyclopedia();
         }
-        // 2. ตรวจสอบการ "ปิด"
-        // (UI ต้องเปิดอยู่, และกด F หรือ ESC)
+
         else if (isOpen && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Escape)))
         {
             CloseEncyclopedia();
@@ -101,10 +91,8 @@ public class EncyclopediaStation : MonoBehaviour
         encyclopediaCanvasGroup.interactable = true;
         encyclopediaCanvasGroup.blocksRaycasts = true;
 
-        // เปลี่ยน State ของเกม (อ้างอิงจาก UIManager ของคุณ)
         UIManager.Instance.ChangeState(currentState.UI);
 
-        // ซ่อนปุ่ม "Press F"
         if (pressFPrompt != null)
         {
             pressFPrompt.alpha = 0;
@@ -118,10 +106,8 @@ public class EncyclopediaStation : MonoBehaviour
         encyclopediaCanvasGroup.interactable = false;
         encyclopediaCanvasGroup.blocksRaycasts = false;
 
-        // เปลี่ยน State ของเกมกลับ (อ้างอิงจาก UIManager ของคุณ)
         UIManager.Instance.ChangeState(currentState.None);
 
-        // ถ้าผู้เล่น "ยัง" อยู่ในระยะ ให้แสดงปุ่ม "Press F" กลับมา
         if (isInRange && pressFPrompt != null)
         {
             pressFPrompt.alpha = 1;

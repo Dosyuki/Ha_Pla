@@ -11,8 +11,10 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private Transform fishCardHolder;
     [SerializeField] private TMP_Text maxslotText;
     [SerializeField] private TMP_Text moneyText;
+    [SerializeField] private TMP_Text upgradeCostText;
 
-    [SerializeField] private CanvasGroup fishGroup;
+    [SerializeField] public CanvasGroup fishGroup;
+    [SerializeField] public CanvasGroup characterGroup;
     
     private CanvasGroup canvasGroup;
     private bool isOpen = false;
@@ -25,6 +27,11 @@ public class InventoryUI : Singleton<InventoryUI>
     private void Update()
     {
         
+    }
+
+    public void UpdateUpgradeCostText(float cost)
+    {
+        upgradeCostText.text = $"{cost:F2} to Upgrade";
     }
 
     public void CreateCardUI(bool openFromShip)
@@ -42,6 +49,12 @@ public class InventoryUI : Singleton<InventoryUI>
         fishGroup.alpha = 1;
         fishGroup.interactable = true;
         fishGroup.blocksRaycasts = true;
+        if (openFromShip)
+        {
+            characterGroup.alpha = 1;
+            characterGroup.interactable = true;
+            characterGroup.blocksRaycasts = true;
+        }
         UpdateText();
         foreach (Fish fish in allFish)
         {
@@ -67,6 +80,9 @@ public class InventoryUI : Singleton<InventoryUI>
         canvasGroup.alpha = 0;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+        characterGroup.alpha = 0;
+        characterGroup.interactable = false;
+        characterGroup.blocksRaycasts = false;
 
         foreach (Transform child in fishCardHolder.transform)
         {

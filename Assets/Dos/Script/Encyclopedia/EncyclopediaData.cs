@@ -1,4 +1,3 @@
-// ไฟล์ใหม่: EncyclopediaData.cs
 using System.Collections.Generic;
 
 [System.Serializable]

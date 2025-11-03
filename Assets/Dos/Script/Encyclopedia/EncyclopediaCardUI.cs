@@ -8,7 +8,7 @@ public class EncyclopediaCardUI : MonoBehaviour
 {
     [Header("Card Identity")]
     [Tooltip("ID ของปลาที่ Card นี้จะแสดงผล (ต้องตรงกับ BaseFish.Name)")]
-    public string fishID; // <-- *** เพิ่มบรรทัดนี้ ***
+    public string fishID;
 
     [Header("UI References")]
     [SerializeField] private Image fishPhoto; 
@@ -16,8 +16,7 @@ public class EncyclopediaCardUI : MonoBehaviour
     [SerializeField] private TMP_Text fishWeightText;
     [SerializeField] private GameObject undiscoveredOverlay; 
 
-    // ฟังก์ชัน UpdateDisplay และ LoadFishPhoto ไม่ต้องแก้ไข
-    // (เหมือนเดิมจากโค้ดก่อนหน้า)
+
     public void UpdateDisplay(EncyclopediaEntry entry)
     {
         if (entry == null) return;

@@ -1,4 +1,3 @@
-// ไฟล์ใหม่: EncyclopediaEntry.cs
 [System.Serializable]
 public class EncyclopediaEntry
 {

@@ -265,7 +265,7 @@ public class FishingRod : BaseItem
     // ----------------- GETTERS SETTER -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
-    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide ? 1 : 0;
+    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide ? 0 : 1;
     public Transform GetBaitTransform() => baitTransform;
     public FishCollectUI GetFishCollectUI() => fishCollectUI;
     public void SetIsRecalling(bool isRecall) => isRecalling = isRecall;

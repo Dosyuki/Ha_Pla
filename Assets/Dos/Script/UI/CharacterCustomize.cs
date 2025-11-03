@@ -6,6 +6,7 @@ public class CharacterCustomize : Singleton<CharacterCustomize>
 {
     [SerializeField] private GameObject character;
     [SerializeField] private Renderer characterRenderer; // ลาก Renderer มาใส่
+    [SerializeField] private Renderer captureCharacter;
 
     // Index ของ Material (ตั้งค่าใน Inspector)
     [SerializeField] private int hairMaterialIndex = 0;
@@ -61,6 +62,7 @@ public class CharacterCustomize : Singleton<CharacterCustomize>
 
         // 3. ยัด Array กลับเข้าไป
         characterRenderer.materials = currentMaterials;
+        captureCharacter.materials = currentMaterials;
     }
     
     // --- ฟังก์ชันที่ UI Buttons เรียกใช้ ---

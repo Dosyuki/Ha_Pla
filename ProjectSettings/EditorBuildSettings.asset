@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Dos/Scene/TestScene.unity
     guid: 3673ccff826c3f84491bbb0038791faf
+  - enabled: 1
+    path: Assets/Erroz/Scene UI/Name_UI.unity
+    guid: 48e0ad616acd69141a4659d30f95d0c1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

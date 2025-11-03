@@ -1,13 +1,10 @@
-// ไฟล์ใหม่: EncyclopediaManager.cs
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
-// ใช้ Singleton.cs ที่คุณมี
 public class EncyclopediaManager : Singleton<EncyclopediaManager>
 {
-    // เราใช้ Dictionary เพื่อค้นหาข้อมูลปลาได้ทันทีจาก "ชื่อ"
     private Dictionary<string, EncyclopediaEntry> entryDatabase;
 
     // เราต้องรอให้ FishManager พร้อมก่อน
@@ -25,8 +22,7 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
 
         entryDatabase = new Dictionary<string, EncyclopediaEntry>();
         
-        // 1. ดึง "ปลาทั้งหมด" ใน ZoneA มาจาก FishManager
-        // (เราต้องไปเพิ่มฟังก์ชัน GetZoneAFish() ใน FishManager ก่อน)
+        
         List<BaseFish> allZoneAFish = FishManager.Instance.fishPrefabsRedZone;
 
         if (allZoneAFish == null)
@@ -35,7 +31,6 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
             return;
         }
 
-        // 2. สร้าง "ช่องว่าง" ในสารานุกรมสำหรับปลาทุกตัว
         foreach (BaseFish fish in allZoneAFish)
         {
             if (!entryDatabase.ContainsKey(fish.Name))
@@ -47,16 +42,12 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
         isInitialized = true;
         Debug.Log($"Encyclopedia: เริ่มต้นฐานข้อมูลสำเร็จ มีปลา {entryDatabase.Count} ชนิด");
 
-        // 3. (สำคัญ) ถ้ามีการ Load Game เกิดขึ้นก่อน Start()
-        // เราต้องเรียก LoadData อีกครั้งเพื่อให้ข้อมูลที่โหลดมาถูกนำไปใช้
+       
         TryReapplyLoadedData();
     }
     
     private EncyclopediaData pendingLoadData; // ตัวแปรพักข้อมูลที่ Load มา
-// --- *** ฟังก์ชันใหม่ *** ---
-    /// <summary>
-    /// ตรวจสอบว่าปลาใน Zone A ครบหรือยัง และให้รางวัลถ้ายังไม่เคยรับ
-    /// </summary>
+
     public void CheckForZoneACompletion()
     {
         // 1. ถ้ายังไม่พร้อม หรือ รับรางวัลไปแล้ว -> ไม่ต้องทำอะไร
@@ -89,13 +80,10 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
     // --- *** ฟังก์ชันใหม่ *** ---
     private void GiveZoneAReward()
     {
-        // --- นี่คือส่วนที่คุณใส่รางวัลได้เลย ---
 
-        // ตัวอย่าง: ให้เงิน 1000 Fishlars
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.AddWeightMultiplier(0.2f);
-            Debug.Log("REWARD: ได้รับ 1000 Fishlars!");
         }
 
         // ตัวอย่าง: ให้เหยื่อพิเศษ 5 ชิ้น (เช่น baitD)
@@ -110,11 +98,8 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
             }
         }
 
-        // (คุณสามารถเรียก UI Popup แสดงความยินดีได้ที่นี่)
     }
-    /// <summary>
-    /// ฟังก์ชันหลัก! ใช้สำหรับส่งปลาที่จับได้ใหม่มาตรวจสอบ
-    /// </summary>
+
     public void SubmitFish(Fish fish)
     {
         if (!isInitialized) 
@@ -148,7 +133,6 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
             {
                 CheckForZoneACompletion();
             }
-            // --- *** จบส่วนที่เพิ่ม *** ---
         }
     }
 

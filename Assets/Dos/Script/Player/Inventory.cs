@@ -32,7 +32,6 @@ public class Inventory : Singleton<Inventory>
     [Tooltip("สถานะว่า Inventory UI เปิดอยู่หรือไม่ (ควบคุมโดยสคริปต์นี้)")]
     private bool isInventoryOpen = false;
 
-    // (Property `isEquipRod` เดิมของคุณยังคงอยู่)
     public bool isEquipRod
     {
         get { return _isEquipRod; }
@@ -53,15 +52,14 @@ public class Inventory : Singleton<Inventory>
     void Start()
     {
         maxSlots = 20 + (currentUpgradeTier * 10);
-        isEquipRod = true; // (เหมือนเดิม)
-        isInventoryOpen = false; // (สถานะเริ่มต้น)
+        isEquipRod = true;
+        isInventoryOpen = false; 
+        InventoryUI.Instance.UpdateUpgradeCostText(UpgradeCost());
     }
 
-    // --- นี่คือ UPDATE LOOP ที่อัปเดตใหม่ ---
     void Update()
     {
-        // --- 1. ตรรกะการ "เปิด" Inventory (ด้วย Tab) ---
-        // (เช็ค: กด Tab, Inventory ยังไม่เปิด, และเราอยู่ในเกมปกติ)
+
         if (Input.GetKeyDown(KeyCode.Tab) && !isInventoryOpen && 
             UIManager.Instance.GetCurrentState() == currentState.None)
         {
@@ -69,14 +67,12 @@ public class Inventory : Singleton<Inventory>
             if (currentRod.getIsThrown())
                 return; 
             
-            // เปิด Inventory (ใช้ `true` เหมือนกับ `ShipStorage`)
             InventoryUI.Instance.CreateCardUI(true);
             isInventoryOpen = true;
             return; // จบการทำงานในเฟรมนี้
         }
 
-        // --- 2. ตรรกะการ "ปิด" Inventory (ด้วย Esc) ---
-        // (เช็ค: กด Esc และ Inventory "เปิดอยู่" โดยสคริปต์นี้)
+
         if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) && isInventoryOpen)
         {
             // ปิด Inventory (ใช้ `InventorySource.Ship` เหมือนกับ `ShipStorage`)
@@ -85,15 +81,13 @@ public class Inventory : Singleton<Inventory>
             return; // จบการทำงานในเฟรมนี้
         }
         
-        // --- 3. ตรรกะการ "อัปเกรด" (ด้วย R) ---
-        // (ตรรกะนี้ดึงมาจาก `ShipStorage`)
-        // (เช็ค: Inventory ต้อง "เปิดอยู่" และ กด R)
+
         if (isInventoryOpen && Input.GetKeyDown(KeyCode.R) && 
             PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
         {
             PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
             InventoryUI.Instance.UpdateText();
-            Inventory.Instance.UpgradeTier(); // (เรียกฟังก์ชัน Upgrade ที่มีอยู่แล้ว)
+            UpgradeTier();
         }
     }
 
@@ -101,8 +95,11 @@ public class Inventory : Singleton<Inventory>
 
     public void UpdateCurrentBait()
     {
-        if(currentBait != null)
-            baitInventoryUI.UpdateCardUI(currentBait,currentBait.amount);
+        if (EquippedBaitSlot.Instance != null)
+        {
+            // และสั่งให้มันอัปเดตหน้าตาตามเหยื่อปัจจุบัน (ไม่ว่าจะเป็น null หรือไม่)
+            EquippedBaitSlot.Instance.UpdateEquippedBait(currentBait);
+        }
     }
     
     public void AddFish(Fish fish)
@@ -125,10 +122,10 @@ public class Inventory : Singleton<Inventory>
     {
         if(PlayerStats.Instance.GetMoney() < Inventory.Instance.UpgradeCost())
             return;
+        InventoryUI.Instance.UpdateUpgradeCostText(UpgradeCost());
         currentUpgradeTier++;
         maxSlots = 20 + (currentUpgradeTier * 10);
         
-        // (แนะนำ) อัปเดต Text หลังจากอัปเกรด
         if (isInventoryOpen)
         {
             InventoryUI.Instance.UpdateText();
@@ -153,7 +150,6 @@ public class Inventory : Singleton<Inventory>
         currentBait = existing;
     }
     
-    // (ฟังก์ชัน Save/Load เหมือนเดิม)
     public InventoryData GetSaveData()
     {
         InventoryData data = new InventoryData();

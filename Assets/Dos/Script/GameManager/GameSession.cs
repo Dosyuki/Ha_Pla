@@ -1,21 +1,21 @@
-// ไฟล์ใหม่: GameSession.cs
+// ไฟล์: GameSession.cs (ตรวจสอบว่ามีโค้ดนี้)
 using UnityEngine;
 
-// ใช้ Singleton.cs ที่คุณมี
-// เราจะปรับแต่ง Singleton นี้เล็กน้อยให้เป็น DontDestroyOnLoad
 public class GameSession : Singleton<GameSession>
 {
-    // เราจะเก็บ Slot ID ที่กำลังเล่นอยู่ไว้ที่นี่
-    public int CurrentSlotId { get; private set; } = 0; // เริ่มต้นเป็น 0 (ยังไม่เลือก)
+    public int CurrentSlotId { get; private set; } = 0;
 
+    // --- *** นี่คือส่วนที่สำคัญที่สุด *** ---
     protected void Awake()
     {
+        
         // และสั่งให้ตัวเอง "ไม่ถูกทำลาย" เมื่อโหลด Scene ใหม่
         DontDestroyOnLoad(this.gameObject);
     }
+    // --- *** จบส่วนสำคัญ *** ---
 
     /// <summary>
-    /// ฟังก์ชันนี้จะถูกเรียกโดยปุ่มใน Main Menu
+    /// ฟังก์ชันนี้จะถูกเรียกโดยปุ่มใน Main Menu (ทั้ง Load และ New)
     /// </summary>
     public void SetCurrentSlot(int slotId)
     {

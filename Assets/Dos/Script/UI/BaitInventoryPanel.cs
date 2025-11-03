@@ -28,6 +28,9 @@ public class BaitInventoryPanel : Singleton<BaitInventoryPanel>
         canvasGroup.alpha = 1;
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
+        InventoryUI.Instance.fishGroup.alpha = 0;
+        InventoryUI.Instance.fishGroup.interactable = false;
+        InventoryUI.Instance.fishGroup.blocksRaycasts = false;
 
 
         // โหลดเหยื่อทั้งหมดจาก Inventory
