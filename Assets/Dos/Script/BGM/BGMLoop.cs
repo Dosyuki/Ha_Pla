@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BGMLoop : MonoBehaviour
+public class BGMLoop : Singleton<BGMLoop>
 {
     public AudioSource audioSource;
     public AudioClip audioClip;
