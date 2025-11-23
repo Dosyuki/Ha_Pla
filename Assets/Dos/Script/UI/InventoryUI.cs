@@ -12,6 +12,8 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private TMP_Text maxslotText;
     [SerializeField] private TMP_Text moneyText;
     [SerializeField] private TMP_Text upgradeCostText;
+    [SerializeField] private RectTransform fishScrollRect;
+    [SerializeField] private RectTransform baitScrollRect;
 
     [SerializeField] public CanvasGroup fishGroup;
     [SerializeField] public CanvasGroup characterGroup;
@@ -49,6 +51,10 @@ public class InventoryUI : Singleton<InventoryUI>
         fishGroup.alpha = 1;
         fishGroup.interactable = true;
         fishGroup.blocksRaycasts = true;
+
+        fishScrollRect.anchoredPosition = new Vector2(0, -20);
+        baitScrollRect.anchoredPosition = new Vector2(0, -20);
+        
         if (openFromShip)
         {
             characterGroup.alpha = 1;

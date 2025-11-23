@@ -12,6 +12,7 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] private TMP_Text name;
     [SerializeField] public Sprite normalSprite;
     [SerializeField] public Sprite selectedSprite;
+    [SerializeField] public Image bgImage;
 
     public bool selected;
     public void UpdateCardUI(Fish fish)
@@ -21,6 +22,10 @@ public class CardInventoryUI : MonoBehaviour
         weight.text = $"{baseFish.Weight:F2} KG";
         value.text = $"{baseFish.CalculateValue():F2} Fishlars";
         name.text = baseFish.Name;
+        if (bgImage != null)
+        {
+            bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, selected);
+        }
     }
 
     public void OnClick()
@@ -30,15 +35,21 @@ public class CardInventoryUI : MonoBehaviour
             return;
         if (!selected)
         {
-            GetComponent<Image>().sprite = selectedSprite;
-            selected = true;
             ShopManager.Instance.AddSelectedFish(baseFish);
+            SetSelectionVisual(true); 
         }
         else
         {
-            GetComponent<Image>().sprite = normalSprite;
-            selected = false;
             ShopManager.Instance.RemoveSelectedFish(baseFish);
+            SetSelectionVisual(false);
         }
+    }
+    public void SetSelectionVisual(bool isSelected)
+    {
+        if (bgImage != null)
+        {
+            bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, isSelected);
+        }
+        selected = isSelected;
     }
 }

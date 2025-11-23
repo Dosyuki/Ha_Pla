@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: baitB
   m_EditorClassIdentifier: 
   Name: baitB
-  Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
+  Sprite: {fileID: 21300000, guid: 498c546b5cbd5c748ba818e9636d511e, type: 3}
   Description: +10% Luck Roll
   Value: 5
   LuckMultiplier: 1.1

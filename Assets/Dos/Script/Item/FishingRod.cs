@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -204,9 +206,11 @@ public class FishingRod : BaseItem
     IEnumerator WaitForFish()
     {
         waitingForFish = true; // lock
-        float random = Random.Range(1f, 2f);
-        yield return new WaitForSeconds(random);
+        float randomTime = Random.Range(2f, 3f);
+        yield return new WaitForSeconds(randomTime);
         bait.isKinematic = true;
+        GameObject.Find("FishAlert").GetComponent<PlayableDirector>().Play();
+        yield return new WaitForSeconds(1.5f);
         if (minigame == null && !isRecalling && isDoneMinigame)
         {
             Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
