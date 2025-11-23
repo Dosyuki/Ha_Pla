@@ -92,7 +92,10 @@ public class newMinigame : MonoBehaviour
         {
             // Spawn Fish and Yeet Fish
             Inventory.Instance.CurrentRod.SetIsRecalling(true);
-            TransitionFish.Instance.StartTransition(curFish);
+            
+            Inventory.Instance.CurrentRod.GetComponent<Animator>().Play("Reel");
+            //TransitionFish.Instance.StartTransition(curFish);
+            
 
             // Tell the rod we’re done
             Inventory.Instance.CurrentRod.ClearMinigame();

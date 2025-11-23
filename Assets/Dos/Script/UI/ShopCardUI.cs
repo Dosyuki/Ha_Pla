@@ -26,7 +26,7 @@ public class ShopCardUI : MonoBehaviour , IPointerEnterHandler, IPointerExitHand
         baseBait = bait;
         image.sprite = baseBait.Sprite;
         NameText.text = baseBait.Name;
-        ValueText.text = ((int)baseBait.Value).ToString();
+        ValueText.text = ((int)baseBait.Value).ToString() + "$";
     }
 
     public void Clicked()
