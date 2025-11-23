@@ -21,6 +21,7 @@ public class TimeSystem : Singleton<TimeSystem>
     
         [SerializeField] private Gradient equatorColor;
         [SerializeField] private Gradient sunColor;
+        [SerializeField] private Gradient fogColor;
         //function to update Sun's rotation
         [SerializeField] private Image dayLightUI;
 
@@ -32,8 +33,8 @@ public class TimeSystem : Singleton<TimeSystem>
         private void Update()
         {
             timeOfDay += (24f / sunRotationSpeed) * Time.deltaTime;
-            if (timeOfDay > 24)
-                timeOfDay = 0;
+            if (timeOfDay >= 24)
+                timeOfDay %= 24;
             UpdateSunRotation();
             UpdateLighting();
         }
@@ -61,6 +62,8 @@ public class TimeSystem : Singleton<TimeSystem>
             RenderSettings.ambientEquatorColor = equatorColor.Evaluate(timeFraction);
             RenderSettings.ambientSkyColor = skyColor.Evaluate(timeFraction);
             sun.color = sunColor.Evaluate(timeFraction);
+            
+            RenderSettings.fogColor = fogColor.Evaluate(timeFraction);
         }
 
         public float[] GetDynamicCondition()
