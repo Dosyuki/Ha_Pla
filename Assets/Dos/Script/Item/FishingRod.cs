@@ -288,7 +288,7 @@ public class FishingRod : BaseItem
 
             // ยิงปลาและเหยื่อขึ้นไป
             float launchForce = 25f; // ปรับความแรงตรงนี้
-            bait.velocity = Vector3.zero; // รีเซ็ตแรงเก่า
+            bait.linearVelocity = Vector3.zero; // รีเซ็ตแรงเก่า
             bait.AddForce(launchDir * launchForce, ForceMode.Impulse);
 
             // หมุนปลาให้หันไปทางที่บินไป
