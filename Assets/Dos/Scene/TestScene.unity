@@ -11700,7 +11700,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1133432706
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14380,7 +14380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sun: {fileID: 541214621}
   timeOfDay: 6.68
-  sunRotationSpeed: 15
+  sunRotationSpeed: 1200
   sleepTimeMultipier: 60
   skyColor:
     serializedVersion: 2
@@ -18538,6 +18538,7 @@ MonoBehaviour:
     smooth: 0
     smoothTime: 5
     lockCursor: 1
+  rodAnimator: {fileID: 0}
   currentFish:
     Name: 
     Description: 
