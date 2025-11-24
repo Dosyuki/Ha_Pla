@@ -8,6 +8,10 @@ using Random = UnityEngine.Random;
 
 public class FishingRod : BaseItem
 {
+    private static readonly int IsCharging = Animator.StringToHash("isCharging");
+    private static readonly int IsThrown = Animator.StringToHash("isThrown");
+    private static readonly int FishBite = Animator.StringToHash("fishBite");
+
     [Header("Fishing Charge")]
     [SerializeField] private Slider fishingSlider;
     public float chargeSpeed = 1f; 
@@ -23,6 +27,7 @@ public class FishingRod : BaseItem
     [SerializeField] private LayerMask FishingLayer;
     [SerializeField] private FirstPersonController playerController;
     [SerializeField] private MouseLook mouseLook;
+    [SerializeField] private Animator rodAnimator;
     [SerializeField] public Fish currentFish;
 
     [SerializeField] private Transform baitTransform;
@@ -50,6 +55,7 @@ public class FishingRod : BaseItem
         playerController = FindObjectOfType<FirstPersonController>();
         mouseLook = playerController.GetMouseLook();
         fishCollectUI = FindObjectOfType<FishCollectUI>(true);
+        rodAnimator = GetComponent<Animator>();
 
         lineRenderer = bait.GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -96,16 +102,13 @@ public class FishingRod : BaseItem
             StartRecall();
             ObtainFish(); 
         }
-
-        // --- แก้ไข: ลบส่วนนี้ออก เพื่อไม่ให้มันรีเซ็ตตำแหน่งทันทีที่ได้ปลา ---
-        /*
-        if (isRecalling && currentFish != null)
-        {
-            ObtainFish();
-        }
-        */
+        
 
         FishingHook();
+        rodAnimator.SetBool(IsCharging,isCharging);
+        rodAnimator.SetBool(IsThrown,isThrown);
+        rodAnimator.SetBool(FishBite,minigame);
+
     }
 
     // ใช้ LateUpdate วาดเส้น (ตามที่แก้ไขไปครั้งก่อน)
