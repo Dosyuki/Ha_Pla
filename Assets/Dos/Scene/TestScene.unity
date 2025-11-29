@@ -17997,7 +17997,7 @@ MonoBehaviour:
     baseFish: {fileID: 0}
   baitTransform: {fileID: 459261628}
   rodTip: {fileID: 1333629547}
-  newMinigame: {fileID: 6270459246956381944, guid: e6121be83fdc912448d2e0f12c3d401d, type: 3}
+  newMinigame: {fileID: 1746158518514565660, guid: 2467534a0b3601f4696e4a00ba0081a2, type: 3}
   sliderCanvasGroup: {fileID: 166323624}
 --- !u!1 &1996685531
 GameObject:

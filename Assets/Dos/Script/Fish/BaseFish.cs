@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BaseFish", menuName = "Scriptable Objects/Fish/newFish")]
@@ -18,7 +19,13 @@ public class BaseFish : ScriptableObject
     public float DashDuration;
     public float ProgressRateIncrease;
     public float ProgressRateDecrease;
-
+    [System.Serializable]
+    public struct movementPattern
+    {
+        public float timeLeft;
+        public float speedTime;
+    }
+    public List<movementPattern> movementPatterns;
 }
 
 public enum FishRarity

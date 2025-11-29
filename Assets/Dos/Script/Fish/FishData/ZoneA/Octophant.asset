@@ -25,3 +25,8 @@ MonoBehaviour:
   DashDuration: 0.3
   ProgressRateIncrease: 8
   ProgressRateDecrease: 13
+  movementPatterns:
+  - timeLeft: 0.6
+    speedTime: 1
+  - timeLeft: 1
+    speedTime: 1.5

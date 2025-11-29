@@ -96,7 +96,7 @@ public class FishingRod : BaseItem
         }
 
         // Right click recall (Cancel fishing)
-        if (Input.GetMouseButtonDown(1) && isThrown && !isRecalling)
+        if (Input.GetMouseButtonDown(1) && isThrown && !isRecalling && !waitingForFish)
         {
             // ถ้ากดคลิกขวาเพื่อยกเลิก ให้ดึงกลับทันทีแบบไม่มีปลา
             StartRecall();
@@ -224,7 +224,8 @@ public class FishingRod : BaseItem
         float randomTime = Random.Range(2f, 3f);
         yield return new WaitForSeconds(randomTime);
         bait.isKinematic = true;
-        GameObject.Find("FishAlert").GetComponent<PlayableDirector>().Play();
+        if(minigame == null)
+            GameObject.Find("FishAlert").GetComponent<PlayableDirector>().Play();
         yield return new WaitForSeconds(1.5f);
         
         if (minigame == null && !isRecalling && isDoneMinigame)
@@ -232,7 +233,7 @@ public class FishingRod : BaseItem
             Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
             currentFish = caughtFish;
             minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
-            minigame.GetComponent<newMinigame>().AssignFish(currentFish);
+            minigame.GetComponent<MinigameFishReel>().SetupFish(currentFish);
             isDoneMinigame = false;
             Debug.Log("Start Playing Minigame");
         }
@@ -265,7 +266,7 @@ public class FishingRod : BaseItem
     public void BeginRecall()
     {
         isRecalling = true;
-        Destroy(minigame);
+        Destroy(minigame,0.5f);
         playerController.enabled = true;
         HideSliderCanvas(true);
         
