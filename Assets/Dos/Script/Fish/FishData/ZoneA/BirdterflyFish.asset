@@ -26,7 +26,7 @@ MonoBehaviour:
   ProgressRateIncrease: 10
   ProgressRateDecrease: 6
   movementPatterns:
-  - timeLeft: 1
+  - timeLeft: 2
     speedTime: 0.5
-  - timeLeft: 0.8
+  - timeLeft: 2
     speedTime: 0.75

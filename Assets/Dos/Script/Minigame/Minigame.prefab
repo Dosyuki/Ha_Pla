@@ -102,6 +102,7 @@ MonoBehaviour:
     photoGUID: 
     baseFish: {fileID: 0}
   progressBar: {fileID: 4706099744680704298}
+  timeBeforeYellow: 1
   min: 0
   max: 100
   startValue: 30

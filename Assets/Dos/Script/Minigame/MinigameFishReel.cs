@@ -8,6 +8,7 @@ public class MinigameFishReel : MonoBehaviour
     [Header("Fish Reel")]
     public Fish curFish;
     public Slider progressBar;
+    public float timeBeforeYellow;
 
     [Header("ProgressBar Customize")] 
     [SerializeField] private float min = 0;
@@ -92,7 +93,10 @@ public class MinigameFishReel : MonoBehaviour
             // --- Phase 1: ปลาเหนื่อย (ดึงได้) ---
             isFishCalm = true;
             UpdateIndicator(Color.green); 
-            yield return new WaitForSeconds(pattern.timeLeft);
+            yield return new WaitForSeconds(pattern.timeLeft - timeBeforeYellow);
+            
+            UpdateIndicator(Color.yellow);
+            yield return new WaitForSeconds(timeBeforeYellow);
 
             // --- Phase 2: ปลาดิ้น (ห้ามดึง) ---
             isFishCalm = false;
