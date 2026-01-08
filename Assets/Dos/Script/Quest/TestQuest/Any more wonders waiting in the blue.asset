@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b57698f403f489c4393777ac70ac89e8, type: 3}
+  m_Name: Any more wonders waiting in the blue
+  m_EditorClassIdentifier: 
+  questTitle: Any more wonders waiting in the blue?
+  description: 
+  requirements:
+  - type: 0
+    specificFish: {fileID: 11400000, guid: de465d8cd66d8f64692517c6d109d453, type: 2}
+    requiredRarity: 0
+    minWeight: 0
+    amountRequired: 1
+  - type: 0
+    specificFish: {fileID: 11400000, guid: 8ef297eb5156e3848b4f0a9477e6aed4, type: 2}
+    requiredRarity: 0
+    minWeight: 0
+    amountRequired: 1
+  - type: 0
+    specificFish: {fileID: 11400000, guid: f973908627aaeb041b4e1327e03b0f2e, type: 2}
+    requiredRarity: 0
+    minWeight: 0
+    amountRequired: 1
+  - type: 0
+    specificFish: {fileID: 11400000, guid: c6a692dc7d15e8b42bc7949435b53bfa, type: 2}
+    requiredRarity: 0
+    minWeight: 0
+    amountRequired: 1
+  - type: 0
+    specificFish: {fileID: 11400000, guid: 5424c52627f075c40b64118846eae083, type: 2}
+    requiredRarity: 0
+    minWeight: 0
+    amountRequired: 1
+  moneyReward: 99999

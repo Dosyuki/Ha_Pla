@@ -54,6 +54,12 @@ public class UIManager : Singleton<UIManager>
         return true;
     }
     public currentState GetCurrentState() => m_currentState;
+    public void ToggleCanvasGroup(CanvasGroup canvasGroup, bool Show)
+    {
+        canvasGroup.interactable = Show;
+        canvasGroup.blocksRaycasts = Show;
+        canvasGroup.alpha = Show ? 1 : 0;
+    }
 }
 
 public enum currentState

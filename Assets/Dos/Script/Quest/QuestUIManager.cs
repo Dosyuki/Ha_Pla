@@ -71,11 +71,12 @@ public class QuestUIManager : Singleton<QuestUIManager>
     private void EndDialogue()
     {
         dialoguePanel.SetActive(false);
-        
+        UIManager.Instance.ChangeState(currentState.None);
         // ถ้าคุยจบแล้วมีเควสแนบมา -> เปิดหน้าเควสต่อเลย
         if (currentActiveQuest != null)
         {
             OpenQuestWindow(currentActiveQuest);
+            UIManager.Instance.ChangeState(currentState.UI);
         }
     }
 
@@ -230,6 +231,7 @@ public class QuestUIManager : Singleton<QuestUIManager>
     public void CloseQuestWindow()
     {
          questPanel.SetActive(false);
-         UIManager.Instance.ChangeState(currentState.None);
+         if(!QuestCardManager.Instance.isOpen)
+             UIManager.Instance.ChangeState(currentState.None);
     }
 }
