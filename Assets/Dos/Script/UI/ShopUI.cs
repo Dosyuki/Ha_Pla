@@ -17,7 +17,7 @@ public class ShopUI : MonoBehaviour
         this.baits = new List<BaseBait>(baits);
         foreach (Transform child in shopCardHolder)
             Destroy(child.gameObject);
-
+        shopCardHolder.GetComponent<RectTransform>().anchoredPosition = new Vector2(132, -106);
         foreach (BaseBait bait in baits)
         {
             ShopCardUI card = Instantiate(shopCardPrefab, shopCardHolder).GetComponent<ShopCardUI>();

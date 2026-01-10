@@ -7,9 +7,11 @@ using UnityEngine.UI;
 public class BaitInventoryUI : MonoBehaviour , IPointerEnterHandler , IPointerExitHandler
 {
     [SerializeField] public Bait baseBait;
-    [SerializeField] private Image sprite;
+    [SerializeField] public Image sprite;
     [SerializeField] private TMP_Text amountText;
     [SerializeField] private TMP_Text name;
+    [SerializeField] public Sprite normalSprite;
+    [SerializeField] public Sprite selectedSprite;
 
     private bool selected;
 

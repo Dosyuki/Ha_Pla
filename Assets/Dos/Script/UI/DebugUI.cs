@@ -12,8 +12,8 @@ public class DebugUI : MonoBehaviour
         var bait = Inventory.Instance.currentBait;
 
         // If bait is null, default multipliers = 1
-        float baitLuck = bait?.LuckMultiplier ?? 1f;
-        float baitWeight = bait?.WeightMultiplier ?? 1f;
+        float baitLuck = bait?.GetBaseBait() ? bait.LuckMultiplier : 1;
+        float baitWeight = bait?.GetBaseBait()? bait.WeightMultiplier : 1;
 
         float weatherLuck = TimeSystem.Instance.GetDynamicCondition()[0];
         float weatherWeight = TimeSystem.Instance.GetDynamicCondition()[1];

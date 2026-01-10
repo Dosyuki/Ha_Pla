@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,20 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
+    
+    [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject startUpText;
+    public static int slotToLoad = 0; // 0 = New Game, >0 = Load Slot ID
+
+    private void Update()
+    {
+        if (Input.anyKeyDown)
+        {
+            mainMenu.SetActive(true);
+            startUpText.SetActive(false);
+        }
+    }
+
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);

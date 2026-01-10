@@ -1,16 +1,22 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class FishingRod : BaseItem
 {
+    private static readonly int IsCharging = Animator.StringToHash("isCharging");
+    private static readonly int IsThrown = Animator.StringToHash("isThrown");
+    private static readonly int FishBite = Animator.StringToHash("fishBite");
+
     [Header("Fishing Charge")]
     [SerializeField] private Slider fishingSlider;
-    public float chargeSpeed = 1f; // speed of up/down movement
+    public float chargeSpeed = 1f; 
 
-    private int direction = 1; // 1 = going up, -1 = going down
+    private int direction = 1; 
     private bool isStopped = false;
     private bool isCharging = false;
 
@@ -21,6 +27,7 @@ public class FishingRod : BaseItem
     [SerializeField] private LayerMask FishingLayer;
     [SerializeField] private FirstPersonController playerController;
     [SerializeField] private MouseLook mouseLook;
+    [SerializeField] private Animator rodAnimator;
     [SerializeField] public Fish currentFish;
 
     [SerializeField] private Transform baitTransform;
@@ -28,14 +35,19 @@ public class FishingRod : BaseItem
 
     [SerializeField] private GameObject newMinigame;
     [SerializeField] private CanvasGroup sliderCanvasGroup;
-    
 
+    private float thrownMultipier = 1f;
     private Rigidbody bait;
     private LineRenderer lineRenderer;
     private FishCollectUI fishCollectUI;
     private bool isRecalling = false;
-    private bool isDoneMinigame = false;
+    private bool isDoneMinigame = true;
     private GameObject minigame;
+    private bool waitingForFish = false;
+    
+    // ตัวแปรสำหรับเก็บ Coroutine เพื่อสั่งหยุดเมื่อจำเป็น
+    private Coroutine waitFishCoroutine;
+
 
     private void Start()
     {
@@ -46,6 +58,7 @@ public class FishingRod : BaseItem
         playerController = FindObjectOfType<FirstPersonController>();
         mouseLook = playerController.GetMouseLook();
         fishCollectUI = FindObjectOfType<FishCollectUI>(true);
+        rodAnimator = GetComponent<Animator>();
 
         lineRenderer = bait.GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
@@ -55,47 +68,62 @@ public class FishingRod : BaseItem
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         
-        fishingSlider.minValue = 0;
-        fishingSlider.maxValue = 1;
-        fishingSlider.value = 0;
+        fishingSlider.minValue = 1;
+        fishingSlider.maxValue = 2;
+        fishingSlider.value = 1;
+        
+        HideSliderCanvas(true);
     }
 
     private void Update()
     {
-        // Start charging when press
         if(UIManager.Instance.GetCurrentState() == currentState.UI)
             return;
-        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null 
-                                                         && Inventory.Instance.currentBait.amount > 0))
+
+        // Start charging
+        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null))
         {
-            StartCharging();
-            Inventory.Instance.currentBait.amount--;
+            if (Inventory.Instance.currentBait.amount > 0)
+            {
+                StartCharging();
+                Inventory.Instance.currentBait.amount--;
+            }
+            else
+            {
+                UIAlert.Instance.FishWarning();
+            }
         }
 
-        // Keep updating while holding
         if (Input.GetMouseButton(0) && isCharging)
         {
             UpdateCharging();
         }
 
-        // Release and throw
         if (Input.GetMouseButtonUp(0) && isCharging)
         {
             ReleaseCharge();
         }
 
-        // Right click recall
-        if (Input.GetMouseButtonDown(1) && isThrown)
+        // Right click recall (Cancel fishing)
+        if (Input.GetMouseButtonDown(1) && isThrown && !isRecalling && !waitingForFish)
         {
             StartRecall();
+            ObtainFish(); 
         }
 
-        if (isRecalling)
+        // --- แก้ไข: เช็ค FishingHook เฉพาะตอนที่เหวี่ยงเบ็ดไปแล้วเท่านั้น ---
+        if (isThrown)
         {
-            RecallBaitLerp();
+            FishingHook();
         }
+        
+        rodAnimator.SetBool(IsCharging,isCharging);
+        rodAnimator.SetBool(IsThrown,isThrown);
+        rodAnimator.SetBool(FishBite,minigame != null); // เช็คว่ามี object minigame อยู่จริงไหม
+    }
 
-        FishingHook();
+    private void LateUpdate()
+    {
         if (isThrown || isRecalling)
         {
             UpdateLine();
@@ -106,7 +134,8 @@ public class FishingRod : BaseItem
 
     private void StartCharging()
     {
-        fishingSlider.value = 0.2f;   // always restart at 0.2
+        HideSliderCanvas(false);
+        fishingSlider.value = 1.0f;
         direction = 1;
         isStopped = false;
         isCharging = true;
@@ -118,45 +147,29 @@ public class FishingRod : BaseItem
         {
             fishingSlider.value += direction * chargeSpeed * Time.deltaTime;
 
-            // reached top → go down
-            if (direction == 1 && fishingSlider.value >= 1f)
+            if (direction == 1 && fishingSlider.value >= 2f)
             {
-                fishingSlider.value = 1f;
+                fishingSlider.value = 2f;
                 direction = -1;
             }
-            // reached bottom → stop completely
-            else if (direction == -1 && fishingSlider.value <= 0f)
+            else if (direction == -1 && fishingSlider.value <= 1f)
             {
-                fishingSlider.value = 0f;
-                isStopped = true; // stop here until release
+                fishingSlider.value = 1f;
+                direction = 1;
             }
         }
     }
 
     private void ReleaseCharge()
     {
-        // Example "sweet spots"
-        if (fishingSlider.value >= 0.06 && fishingSlider.value < 0.1f)
+        StartFishing(1.25f);
+        if (fishingSlider.value >= 1.90f)
         {
-            StartFishing(1.25f);
-            Debug.Log("Good");
+            fishingSlider.value = 2f;
         }
-        else if (fishingSlider.value >= 0.1f && fishingSlider.value < 0.15f)
-        {
-            StartFishing(1.5f);
-            Debug.Log("Perfect");
-        }
-        else if (fishingSlider.value >= 0.15f && fishingSlider.value < 0.18f)
-        {
-            StartFishing(1.25f);
-            Debug.Log("Good");
-        }
-        else
-        {
-            Debug.Log("Bad");
-        }
-
+        thrownMultipier = fishingSlider.value;
         isCharging = false;
+        HideSliderCanvas(true);
     }
 
     // ----------------- FISHING ACTIONS -----------------
@@ -177,62 +190,90 @@ public class FishingRod : BaseItem
     private void StartRecall()
     {
         isRecalling = true;
-        bait.isKinematic = true;
     }
 
-    private void RecallBaitLerp()
+    public void ObtainFish(Fish obtainedFish = null)
     {
-        float step = RecallSpeed * Time.deltaTime;
-        baitTransform.position = Vector3.MoveTowards(baitTransform.position, rodTip.position, step);
-        rodTip.gameObject.SetActive(false);
-        playerController.enabled = false;
-        bait.GetComponent<MeshRenderer>().enabled = false;
-
-        if (Vector3.Distance(baitTransform.position, rodTip.position) < 0.1f)
+        // --- แก้ไข: สั่งหยุดการรอทันที เพื่อป้องกันบั๊กเดินไม่ได้ ---
+        if (waitFishCoroutine != null)
         {
-            isRecalling = false;
-            isThrown = false;
-            lineRenderer.enabled = false;
-            rodTip.gameObject.SetActive(true);
-
-            bait.transform.parent = rodTip.transform;
-            bait.transform.rotation = rodTip.rotation;
-            foreach (Transform child in baitTransform)
-            {
-                Destroy(child.gameObject);
-            }
-            if(currentFish.Value != 0 && currentFish != null)
-                fishCollectUI.UpdateFish(currentFish);
-            playerController.enabled = true;
-            bait.GetComponent<MeshRenderer>().enabled = true;
-
+            StopCoroutine(waitFishCoroutine);
+            waitFishCoroutine = null;
         }
+        waitingForFish = false;
+
+        // Reset ค่าต่างๆ
+        isRecalling = false;
+        isThrown = false;
+        lineRenderer.enabled = false;
+        rodTip.gameObject.SetActive(true);
+
+        SetBaitDefaultPosition();
+        
+        // คืนการควบคุมให้ผู้เล่น
+        playerController.enabled = true;
+        
+        bait.GetComponent<MeshRenderer>().enabled = true;
+        bait.isKinematic = true; 
+        isDoneMinigame = true;
+    }
+
+    public void SetBaitDefaultPosition()
+    {
+        bait.transform.parent = rodTip.transform;
+        bait.transform.position = rodTip.position;
+        bait.transform.rotation = rodTip.rotation;
     }
 
     private void FishingHook()
     {
-        if (Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length != 0 && !isRecalling)
+        if (!waitingForFish && !isRecalling && Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length > 0)
         {
-            StartCoroutine(WaitForFish());
+            // --- แก้ไข: เก็บ Coroutine ไว้ในตัวแปร ---
+            waitFishCoroutine = StartCoroutine(WaitForFish());
         }
     }
 
     IEnumerator WaitForFish()
     {
-        float random = Random.Range(1f, 2f);
-        yield return new WaitForSeconds(random);
-        bait.isKinematic = true;
-        if (minigame == null)
+        waitingForFish = true; 
+        float randomTime = Random.Range(2f, 3f);
+        yield return new WaitForSeconds(randomTime);
+        
+        // --- แก้ไข: Checkpoint 1 ถ้าเบ็ดถูกเก็บไปแล้ว ให้ยกเลิก ---
+        if (!isThrown) 
         {
-            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,Inventory.Instance.currentBait);
-            currentFish = caughtFish;
-            minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
-            minigame.GetComponent<newMinigame>().AssignFish(currentFish);
+            waitingForFish = false;
+            yield break;
+        }
+
+        bait.isKinematic = true;
+        if(minigame == null)
+        {
+             var director = GameObject.Find("FishAlert")?.GetComponent<PlayableDirector>();
+             if(director != null) director.Play();
         }
             
-        playerController.enabled = false;
-        Debug.Log("Start Playing Minigame");
+        yield return new WaitForSeconds(1.5f);
+        
+        // --- แก้ไข: Checkpoint 2 เช็ค isThrown อีกรอบก่อนเริ่มมินิเกม ---
+        if (minigame == null && !isRecalling && isDoneMinigame && isThrown)
+        {
+            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
+            currentFish = caughtFish;
+            minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
+            minigame.GetComponent<MinigameFishReel>().SetupFish(currentFish);
+            isDoneMinigame = false;
+            
+            Debug.Log("Start Playing Minigame");
+            
+            // ล็อกผู้เล่นเฉพาะตอนเริ่มมินิเกมจริงๆ
+            playerController.enabled = false;
+        }
+            
+        waitingForFish = false; 
     }
+
     private void UpdateLine()
     {
         int segmentCount = lineRenderer.positionCount;
@@ -252,28 +293,68 @@ public class FishingRod : BaseItem
             lineRenderer.SetPosition(i, point);
         }
     }
+
+    // --- Recall Sequence ---
     public void BeginRecall()
     {
         isRecalling = true;
-        Destroy(minigame);
-        playerController.enabled = true;
-        bait.isKinematic = true;
-        HideSliderCanvas(true);
-        // Example: player has 1.1x luck, 1.2x weight multiplier
         
-        // Instantiate fish prefab
+        // ลบ UI มินิเกมทันที (เผื่อไว้)
+        if(minigame != null) Destroy(minigame); // ไม่หน่วงเวลา
+        
+        playerController.enabled = true;
+        HideSliderCanvas(true);
+        
+        bait.isKinematic = false;
+
         if (currentFish.PrefabModel != null)
         {
-            Instantiate(currentFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
+            GameObject visualFish = Instantiate(currentFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
+            
+            Vector3 playerPos = PlayerStats.Instance.transform.position;
+            Vector3 directionToPlayer = (playerPos - baitTransform.position).normalized;
+            Vector3 horizontalDir = new Vector3(directionToPlayer.x, 0, directionToPlayer.z).normalized;
+            
+            Vector3 launchDir = Vector3.Slerp(horizontalDir, Vector3.up, 0.5f).normalized;
+
+            float launchForce = 50f; 
+            bait.linearVelocity = Vector3.zero; 
+            bait.AddForce(launchDir * launchForce, ForceMode.Impulse);
+
+            visualFish.transform.rotation = Quaternion.LookRotation(launchDir);
+
+            StartCoroutine(RecallSequence(visualFish));
+        }
+        else
+        {
+            ObtainFish();
         }
 
         Debug.Log($"Caught a {currentFish.Rarity} {currentFish.Name} weighing {currentFish.Weight:F2}kg!");
     }
 
-    // ----------------- GETTERS -----------------
+    public void ClearMinigame()
+    {
+        minigame = null;
+    }
+
+    private IEnumerator RecallSequence(GameObject visualFish)
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        if(visualFish != null) Destroy(visualFish);
+
+        if(currentFish != null) 
+            fishCollectUI.UpdateFish(currentFish);
+
+        ObtainFish();
+    }
+
+    // ----------------- GETTERS SETTER -----------------
     public bool getIsThrown() => isThrown;
     public LayerMask getFishingLayer() => FishingLayer;
-    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide  ? 0 : 1;
-
-
+    public void HideSliderCanvas(bool hide) => sliderCanvasGroup.alpha = hide ? 0 : 1;
+    public Transform GetBaitTransform() => baitTransform;
+    public FishCollectUI GetFishCollectUI() => fishCollectUI;
+    public void SetIsRecalling(bool isRecall) => isRecalling = isRecall;
 }

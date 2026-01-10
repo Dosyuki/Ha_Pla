@@ -4,49 +4,60 @@ using UnityEngine;
 public class ShipStorage : MonoBehaviour
 {
     [SerializeField] private LayerMask playerMask;
-    [SerializeField] private float hitboxSize;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-     private Collider[] colliders;
-     private CanvasGroup chestUIGroup;
-    void Start()
+    [SerializeField] private CanvasGroup chestUIGroup;
+
+    private bool playerInside = false;
+
+    private void Start()
     {
-        chestUIGroup = transform.GetComponentInChildren<CanvasGroup>();
+        if (chestUIGroup == null)
+            chestUIGroup = GetComponentInChildren<CanvasGroup>();
+
+        chestUIGroup.alpha = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        colliders = Physics.OverlapBox(transform.position, (transform.lossyScale / 2f) * hitboxSize, transform.rotation, playerMask);
-        if (colliders.Length > 0)
+        if (!playerInside) return;
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            InventoryUI.Instance.CreateCardUI(true);
+            return;
+        }
+        else if (Input.GetKeyDown(KeyCode.R) && PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
+        {
+            PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
+            InventoryUI.Instance.UpdateText();
+            Inventory.Instance.UpgradeTier();
+        }
+
+        if (InventoryUI.Instance.gameObject.activeInHierarchy && 
+            (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Escape)))
+        {
+            InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if ((playerMask.value & (1 << other.gameObject.layer)) > 0)
         {
             chestUIGroup.alpha = 1;
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                InventoryUI.Instance.CreateCardUI(true);
-                return;
-            }
-            else if (Input.GetKeyDown((KeyCode.R)) && PlayerStats.Instance.GetMoney() >= Inventory.Instance.UpgradeCost())
-            {
-                Inventory.Instance.UpgradeTier();
-                InventoryUI.Instance.UpdateText();
-                PlayerStats.Instance.SetMoney(PlayerStats.Instance.GetMoney() - Inventory.Instance.UpgradeCost());
-            }
-            if (InventoryUI.Instance.gameObject.activeInHierarchy && (Input.GetKeyDown(KeyCode.F) 
-                                                                           || Input.GetKeyDown(KeyCode.Escape)))
-            {
-                InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
-            }
+            playerInside = true;
         }
-        else if(colliders.Length == 0)
-            chestUIGroup.alpha = 0;
     }
 
-    private void OnDrawGizmos()
+    private void OnTriggerExit(Collider other)
     {
-        Gizmos.color = Color.green;
-        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale * hitboxSize);
-        Gizmos.matrix = rotationMatrix;
-        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
-        Gizmos.matrix = Matrix4x4.identity;
+        if ((playerMask.value & (1 << other.gameObject.layer)) > 0)
+        {
+            chestUIGroup.alpha = 0;
+            playerInside = false;
+
+            // auto-close inventory when leaving
+            if (InventoryUI.Instance.gameObject.activeInHierarchy)
+                InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+        }
     }
 }

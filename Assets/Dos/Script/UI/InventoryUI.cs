@@ -11,8 +11,12 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private Transform fishCardHolder;
     [SerializeField] private TMP_Text maxslotText;
     [SerializeField] private TMP_Text moneyText;
+    [SerializeField] private TMP_Text upgradeCostText;
+    [SerializeField] private RectTransform fishScrollRect;
+    [SerializeField] private RectTransform baitScrollRect;
 
-    [SerializeField] private CanvasGroup fishGroup;
+    [SerializeField] public CanvasGroup fishGroup;
+    [SerializeField] public CanvasGroup characterGroup;
     
     private CanvasGroup canvasGroup;
     private bool isOpen = false;
@@ -25,6 +29,11 @@ public class InventoryUI : Singleton<InventoryUI>
     private void Update()
     {
         
+    }
+
+    public void UpdateUpgradeCostText(float cost)
+    {
+        upgradeCostText.text = $"{cost:F2} to Upgrade";
     }
 
     public void CreateCardUI(bool openFromShip)
@@ -42,6 +51,16 @@ public class InventoryUI : Singleton<InventoryUI>
         fishGroup.alpha = 1;
         fishGroup.interactable = true;
         fishGroup.blocksRaycasts = true;
+
+        fishScrollRect.anchoredPosition = new Vector2(0, -20);
+        baitScrollRect.anchoredPosition = new Vector2(0, -20);
+        
+        if (openFromShip)
+        {
+            characterGroup.alpha = 1;
+            characterGroup.interactable = true;
+            characterGroup.blocksRaycasts = true;
+        }
         UpdateText();
         foreach (Fish fish in allFish)
         {
@@ -67,6 +86,9 @@ public class InventoryUI : Singleton<InventoryUI>
         canvasGroup.alpha = 0;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+        characterGroup.alpha = 0;
+        characterGroup.interactable = false;
+        characterGroup.blocksRaycasts = false;
 
         foreach (Transform child in fishCardHolder.transform)
         {
@@ -78,6 +100,33 @@ public class InventoryUI : Singleton<InventoryUI>
     {
         maxslotText.text = $"{allFish.Count} / {Inventory.Instance.GetMaxSlots()}";
         moneyText.text = $"{PlayerStats.Instance.GetMoney():F2} Fishlars";
+    }
+
+    public void RefreshAllCardVisuals()
+    {
+        // 1. ถาม ShopManager ว่าตอนนี้กำลังเลือกปลาตัวไหนอยู่บ้าง
+        List<Fish> currentSelection = ShopManager.Instance.GetSelectedFishList();
+
+        // 2. วนลูป Card ทุกใบที่อยู่ใน fishCardHolder
+        foreach (Transform child in fishCardHolder.transform)
+        {
+            CardInventoryUI card = child.GetComponent<CardInventoryUI>();
+            if (card == null) continue;
+
+            // 3. ตรวจสอบว่าปลาของ Card ใบนี้ อยู่ใน List ที่เลือกหรือไม่
+            if (currentSelection.Contains(card.baseFish))
+            {
+                // ถ้าใช่: เปิด Outline และตั้งค่า selected = true
+                card.GetComponent<Image>().sprite = card.selectedSprite;
+                card.selected = true;
+            }
+            else
+            {
+                // ถ้าไม่ใช่: ปิด Outline และตั้งค่า selected = false
+                card.GetComponent<Image>().sprite = card.normalSprite;
+                card.selected = false;
+            }
+        }
     }
 }
 public enum InventorySource

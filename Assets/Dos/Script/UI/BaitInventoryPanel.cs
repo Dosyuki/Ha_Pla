@@ -28,6 +28,9 @@ public class BaitInventoryPanel : Singleton<BaitInventoryPanel>
         canvasGroup.alpha = 1;
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
+        InventoryUI.Instance.fishGroup.alpha = 0;
+        InventoryUI.Instance.fishGroup.interactable = false;
+        InventoryUI.Instance.fishGroup.blocksRaycasts = false;
 
 
         // โหลดเหยื่อทั้งหมดจาก Inventory
@@ -65,9 +68,9 @@ public class BaitInventoryPanel : Singleton<BaitInventoryPanel>
         {
             BaitInventoryUI card = child.GetComponent<BaitInventoryUI>();
             if (card.baseBait == Inventory.Instance.currentBait)
-                card.GetComponent<Outline>().enabled = true;
+                card.GetComponent<Image>().sprite = card.selectedSprite;
             else
-                card.GetComponent<Outline>().enabled = false;
+                card.GetComponent<Image>().sprite = card.normalSprite;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class newMinigame : MonoBehaviour
 {
@@ -22,12 +23,13 @@ public class newMinigame : MonoBehaviour
 
     [Header("Score")] [SerializeField] private float maxProgress;
     [SerializeField] private float progress;
-    [SerializeField] private TMP_Text progressText;
+    [SerializeField] private Slider  progressSlider;
     
     [Header("ProgressRate")]
     [SerializeField] private float progressRateIncrease;
     [SerializeField] private float progressRateDecrease;
-    
+
+    private Fish curFish;
     private RectTransform currentFish;
     private Vector2 fishTarget;
 
@@ -40,7 +42,6 @@ public class newMinigame : MonoBehaviour
         SpawnFish();
         PickNewTarget(); // set first target
         UIManager.Instance.ChangeState(currentState.UI);
-        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
     }
 
     private void Update()
@@ -86,12 +87,20 @@ public class newMinigame : MonoBehaviour
             progress -= Time.deltaTime * progressRateDecrease;
         }
         progress = Mathf.Clamp(progress,0f,50f);
-        progressText.text = $"Progress: {progress:F2} / {maxProgress:F2}";
-
+        progressSlider.value = progress;
         if (progress >= maxProgress)
         {
-            Inventory.Instance.CurrentRod.BeginRecall();
-            UIManager.Instance.ChangeState(currentState.None);
+            // Spawn Fish and Yeet Fish
+            Inventory.Instance.CurrentRod.SetIsRecalling(true);
+            
+            Inventory.Instance.CurrentRod.GetComponent<Animator>().Play("Reel");
+            //TransitionFish.Instance.StartTransition(curFish);
+            
+
+            // Tell the rod we’re done
+            Inventory.Instance.CurrentRod.ClearMinigame();
+
+            Destroy(gameObject, 0.25f);
         }
     }
 
@@ -204,6 +213,7 @@ public class newMinigame : MonoBehaviour
 
     public void AssignFish(Fish fish)
     {
+        curFish = fish;
         aiSpeed = 40 * fish.AISpeed;
         boostMultiplier = fish.DashMultiplier;
         boostDuration = fish.DashDuration;

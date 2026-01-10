@@ -113,6 +113,37 @@ public class ShopManager : Singleton<ShopManager>
         selectedFish.Clear();
         CalculateAllValue();
     }
+    public void OnClick_ToggleSelectAll()
+    {
+        // 1. ดึงปลาทั้งหมดที่มีใน Inventory
+        List<Fish> allFish = Inventory.Instance.GetAllFish(); //
+        if (allFish == null || allFish.Count == 0) return; // ไม่มีปลาให้เลือก
+
+        // 2. ตรวจสอบสถานะปัจจุบัน
+        // (ถ้าจำนวนที่เลือก < จำนวนทั้งหมด = เราจะ "เลือกทั้งหมด")
+        bool shouldSelectAll = selectedFish.Count < allFish.Count;
+
+        // 3. ล้าง List ที่เลือกไว้ก่อน
+        selectedFish.Clear();
+
+        // 4. ถ้าเราควรกด "เลือกทั้งหมด"
+        if (shouldSelectAll)
+        {
+            // เพิ่มปลาทั้งหมดเข้าไปใน List
+            selectedFish.AddRange(allFish);
+        }
+        // (ถ้า shouldSelectAll เป็น false, List จะว่างเปล่า = ไม่เลือกเลย)
+
+        // 5. คำนวณราคารวมใหม่
+        CalculateAllValue();
+
+        // 6. (สำคัญ) สั่งให้ InventoryUI "วาด Outline" ใหม่ทั้งหมด
+        InventoryUI.Instance.RefreshAllCardVisuals();
+    }
+    public List<Fish> GetSelectedFishList()
+    {
+        return selectedFish;
+    }
     public bool GetIsOpen() => isOpen;
     
 }

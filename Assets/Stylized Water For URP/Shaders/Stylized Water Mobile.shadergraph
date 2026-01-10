@@ -2801,8 +2801,8 @@
     "m_ObjectId": "379dbc644c1a4cfdb4dd51e083351ee7",
     "m_Title": "Depth Color",
     "m_Position": {
-        "x": -4056.0,
-        "y": 670.0
+        "x": -4056.000244140625,
+        "y": 668.7999267578125
     }
 }
 
@@ -4129,8 +4129,8 @@
     "m_ObjectId": "605a061daada46ccbea7e7b7e626bfc3",
     "m_Title": "Intersection Foam",
     "m_Position": {
-        "x": -2391.0,
-        "y": 985.0
+        "x": -2391.199951171875,
+        "y": 984.000244140625
     }
 }
 
@@ -4445,8 +4445,8 @@
     "m_ObjectId": "6991af7e4dca4a55814558ce1acea634",
     "m_Title": "Intersection Effect Mask",
     "m_Position": {
-        "x": -3161.0,
-        "y": 1083.0
+        "x": -3161.60009765625,
+        "y": 1082.39990234375
     }
 }
 
@@ -5865,8 +5865,8 @@
     "m_ObjectId": "91ea282fa74d433fbd495801ef4b0efa",
     "m_Title": "Shore Color",
     "m_Position": {
-        "x": -3307.0,
-        "y": 295.0
+        "x": -3307.199951171875,
+        "y": 294.4000244140625
     }
 }
 
@@ -6080,8 +6080,8 @@
     "m_ObjectId": "9817ebfc0932407e9c01ed16efd09535",
     "m_Title": "Waves",
     "m_Position": {
-        "x": -3150.0,
-        "y": -84.0
+        "x": -3150.400146484375,
+        "y": -84.79998779296875
     }
 }
 
@@ -6141,8 +6141,8 @@
     "m_ObjectId": "9a932a9bba224874a37b40dc71548b1a",
     "m_Title": "Intersection Depth",
     "m_Position": {
-        "x": -3602.0,
-        "y": 1037.0
+        "x": -3602.400146484375,
+        "y": 1036.0001220703125
     }
 }
 
@@ -6745,8 +6745,8 @@
     "m_ObjectId": "a9d5ee04ebc34ae6b9bb789a2678c7e0",
     "m_Title": "Horizon Color",
     "m_Position": {
-        "x": -3515.0,
-        "y": 670.0
+        "x": -3515.199951171875,
+        "y": 668.7999267578125
     }
 }
 
@@ -7963,8 +7963,8 @@
     "m_ObjectId": "cd0c2766704f453a96675590db6dfc5c",
     "m_Title": "Surface Foam",
     "m_Position": {
-        "x": -2437.0,
-        "y": 652.0
+        "x": -2437.60009765625,
+        "y": 651.2000732421875
     }
 }
 
@@ -8075,8 +8075,8 @@
     "m_ObjectId": "d2f472e5cdde4fbf89ebc663489e184b",
     "m_Title": "UV",
     "m_Position": {
-        "x": -4677.0,
-        "y": 592.0
+        "x": -4677.60009765625,
+        "y": 591.2000732421875
     }
 }
 
@@ -8394,8 +8394,8 @@
     "m_ObjectId": "de700018024b49f3891ba7e09b03faf7",
     "m_Title": "Underwater Color",
     "m_Position": {
-        "x": -3082.0,
-        "y": 587.0
+        "x": -3082.400146484375,
+        "y": 586.4000244140625
     }
 }
 
@@ -8917,8 +8917,8 @@
     "m_ObjectId": "f77bc62a04784f5bbb95f9d9b3575842",
     "m_Title": "Wave Color",
     "m_Position": {
-        "x": -2428.0,
-        "y": 374.0
+        "x": -2428.000244140625,
+        "y": 372.800048828125
     }
 }
 

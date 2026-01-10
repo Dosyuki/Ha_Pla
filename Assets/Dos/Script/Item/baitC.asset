@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: baitC
   m_EditorClassIdentifier: 
   Name: baitC
-  Sprite: {fileID: 21300022, guid: feda0c18015b3284cabbc0da85254f9a, type: 3}
+  Sprite: {fileID: 21300000, guid: eeb733e52c85d624eafabe895da20ca7, type: 3}
   Description: +10% Weight Roll
   Value: 5
   LuckMultiplier: 1
