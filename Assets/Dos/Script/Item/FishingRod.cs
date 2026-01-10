@@ -44,6 +44,9 @@ public class FishingRod : BaseItem
     private bool isDoneMinigame = true;
     private GameObject minigame;
     private bool waitingForFish = false;
+    
+    // ตัวแปรสำหรับเก็บ Coroutine เพื่อสั่งหยุดเมื่อจำเป็น
+    private Coroutine waitFishCoroutine;
 
 
     private void Start()
@@ -78,11 +81,17 @@ public class FishingRod : BaseItem
             return;
 
         // Start charging
-        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null 
-                                                         && Inventory.Instance.currentBait.amount > 0))
+        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null))
         {
-            StartCharging();
-            Inventory.Instance.currentBait.amount--;
+            if (Inventory.Instance.currentBait.amount > 0)
+            {
+                StartCharging();
+                Inventory.Instance.currentBait.amount--;
+            }
+            else
+            {
+                UIAlert.Instance.FishWarning();
+            }
         }
 
         if (Input.GetMouseButton(0) && isCharging)
@@ -98,20 +107,21 @@ public class FishingRod : BaseItem
         // Right click recall (Cancel fishing)
         if (Input.GetMouseButtonDown(1) && isThrown && !isRecalling && !waitingForFish)
         {
-            // ถ้ากดคลิกขวาเพื่อยกเลิก ให้ดึงกลับทันทีแบบไม่มีปลา
             StartRecall();
             ObtainFish(); 
         }
-        
 
-        FishingHook();
+        // --- แก้ไข: เช็ค FishingHook เฉพาะตอนที่เหวี่ยงเบ็ดไปแล้วเท่านั้น ---
+        if (isThrown)
+        {
+            FishingHook();
+        }
+        
         rodAnimator.SetBool(IsCharging,isCharging);
         rodAnimator.SetBool(IsThrown,isThrown);
-        rodAnimator.SetBool(FishBite,minigame);
-
+        rodAnimator.SetBool(FishBite,minigame != null); // เช็คว่ามี object minigame อยู่จริงไหม
     }
 
-    // ใช้ LateUpdate วาดเส้น (ตามที่แก้ไขไปครั้งก่อน)
     private void LateUpdate()
     {
         if (isThrown || isRecalling)
@@ -180,12 +190,19 @@ public class FishingRod : BaseItem
     private void StartRecall()
     {
         isRecalling = true;
-        // bait.isKinematic = true; // เอาออก เพื่อให้ Physics ทำงานตอนปลาลอยมา
     }
 
     public void ObtainFish(Fish obtainedFish = null)
     {
-        // ฟังก์ชันนี้จะทำหน้าที่ "จบงาน" รีเซ็ตค่าและเก็บเหยื่อเข้าที่
+        // --- แก้ไข: สั่งหยุดการรอทันที เพื่อป้องกันบั๊กเดินไม่ได้ ---
+        if (waitFishCoroutine != null)
+        {
+            StopCoroutine(waitFishCoroutine);
+            waitFishCoroutine = null;
+        }
+        waitingForFish = false;
+
+        // Reset ค่าต่างๆ
         isRecalling = false;
         isThrown = false;
         lineRenderer.enabled = false;
@@ -193,14 +210,12 @@ public class FishingRod : BaseItem
 
         SetBaitDefaultPosition();
         
-        // สั่งให้ตัว Player กลับมาขยับได้
+        // คืนการควบคุมให้ผู้เล่น
         playerController.enabled = true;
         
         bait.GetComponent<MeshRenderer>().enabled = true;
-        bait.isKinematic = true; // ล็อกตำแหน่งเหยื่อไว้ที่ปลายเบ็ด
+        bait.isKinematic = true; 
         isDoneMinigame = true;
-        
-        // (การโชว์ UI จะทำใน Coroutine แทน)
     }
 
     public void SetBaitDefaultPosition()
@@ -214,7 +229,8 @@ public class FishingRod : BaseItem
     {
         if (!waitingForFish && !isRecalling && Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length > 0)
         {
-            StartCoroutine(WaitForFish());
+            // --- แก้ไข: เก็บ Coroutine ไว้ในตัวแปร ---
+            waitFishCoroutine = StartCoroutine(WaitForFish());
         }
     }
 
@@ -223,22 +239,38 @@ public class FishingRod : BaseItem
         waitingForFish = true; 
         float randomTime = Random.Range(2f, 3f);
         yield return new WaitForSeconds(randomTime);
+        
+        // --- แก้ไข: Checkpoint 1 ถ้าเบ็ดถูกเก็บไปแล้ว ให้ยกเลิก ---
+        if (!isThrown) 
+        {
+            waitingForFish = false;
+            yield break;
+        }
+
         bait.isKinematic = true;
         if(minigame == null)
-            GameObject.Find("FishAlert").GetComponent<PlayableDirector>().Play();
+        {
+             var director = GameObject.Find("FishAlert")?.GetComponent<PlayableDirector>();
+             if(director != null) director.Play();
+        }
+            
         yield return new WaitForSeconds(1.5f);
         
-        if (minigame == null && !isRecalling && isDoneMinigame)
+        // --- แก้ไข: Checkpoint 2 เช็ค isThrown อีกรอบก่อนเริ่มมินิเกม ---
+        if (minigame == null && !isRecalling && isDoneMinigame && isThrown)
         {
             Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
             currentFish = caughtFish;
             minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
             minigame.GetComponent<MinigameFishReel>().SetupFish(currentFish);
             isDoneMinigame = false;
+            
             Debug.Log("Start Playing Minigame");
+            
+            // ล็อกผู้เล่นเฉพาะตอนเริ่มมินิเกมจริงๆ
+            playerController.enabled = false;
         }
             
-        playerController.enabled = false;
         waitingForFish = false; 
     }
 
@@ -262,45 +294,39 @@ public class FishingRod : BaseItem
         }
     }
 
-    // --- ฟังก์ชันหลักที่แก้ไข ---
+    // --- Recall Sequence ---
     public void BeginRecall()
     {
         isRecalling = true;
-        Destroy(minigame,0.5f);
+        
+        // ลบ UI มินิเกมทันที (เผื่อไว้)
+        if(minigame != null) Destroy(minigame); // ไม่หน่วงเวลา
+        
         playerController.enabled = true;
         HideSliderCanvas(true);
         
-        // 1. เปิด Physics ให้เหยื่อเคลื่อนที่ได้
         bait.isKinematic = false;
 
-        // Instantiate fish prefab
         if (currentFish.PrefabModel != null)
         {
-            // สร้างโมเดลปลาติดกับเหยื่อ
             GameObject visualFish = Instantiate(currentFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
             
-            // คำนวณทิศทางเข้าหาตัวผู้เล่น (ตัดแกน Y ออกแล้วค่อยเงยขึ้น)
             Vector3 playerPos = PlayerStats.Instance.transform.position;
             Vector3 directionToPlayer = (playerPos - baitTransform.position).normalized;
             Vector3 horizontalDir = new Vector3(directionToPlayer.x, 0, directionToPlayer.z).normalized;
             
-            // ผสมเวกเตอร์ให้พุ่งขึ้นฟ้า (เฉียงขึ้น 45-60 องศา)
             Vector3 launchDir = Vector3.Slerp(horizontalDir, Vector3.up, 0.5f).normalized;
 
-            // ยิงปลาและเหยื่อขึ้นไป
-            float launchForce = 25f; // ปรับความแรงตรงนี้
-            bait.linearVelocity = Vector3.zero; // รีเซ็ตแรงเก่า
+            float launchForce = 50f; 
+            bait.linearVelocity = Vector3.zero; 
             bait.AddForce(launchDir * launchForce, ForceMode.Impulse);
 
-            // หมุนปลาให้หันไปทางที่บินไป
             visualFish.transform.rotation = Quaternion.LookRotation(launchDir);
 
-            // เริ่ม Coroutine เพื่อนับเวลาและจบงาน
             StartCoroutine(RecallSequence(visualFish));
         }
         else
         {
-            // กรณีไม่มีโมเดล ให้จบเลย
             ObtainFish();
         }
 
@@ -312,20 +338,15 @@ public class FishingRod : BaseItem
         minigame = null;
     }
 
-    // --- Coroutine ใหม่สำหรับลำดับการดึงปลา ---
     private IEnumerator RecallSequence(GameObject visualFish)
     {
-        // รอเวลาให้ปลาลอย (เช่น 1.5 วินาที)
         yield return new WaitForSeconds(1.5f);
 
-        // ทำลายโมเดลปลาทิ้ง
         if(visualFish != null) Destroy(visualFish);
 
-        // โชว์ UI สรุปผล
         if(currentFish != null) 
             fishCollectUI.UpdateFish(currentFish);
 
-        // รีเซ็ตตำแหน่งเหยื่อกลับที่เดิม
         ObtainFish();
     }
 

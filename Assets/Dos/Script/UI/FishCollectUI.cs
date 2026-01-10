@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ public class FishCollectUI : MonoBehaviour
     public Fish fishStats;
     public TMP_Text fishName;
     public TMP_Text fishWeight;
+    public TMP_Text fishValue;
     public Image fishSprite;
 
     public bool isOpen;
@@ -32,12 +34,27 @@ public class FishCollectUI : MonoBehaviour
     private int fishLayer;
 
     private void Start()
-    {
+    {/*
         // แปลงชื่อ Layer (string) เป็น Layer (int) ตอนเริ่มเกม
         fishLayer = LayerMask.NameToLayer(fishPhotoLayerName);
         if (fishLayer == -1)
         {
             Debug.LogError($"Layer '{fishPhotoLayerName}' ไม่ได้ถูกสร้าง! กรุณาสร้าง Layer นี้ใน Project Settings -> Tags and Layers");
+        }*/
+    }
+
+    private void Update()
+    {
+        if (isOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                PickUpFish();
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                DropFish();
+            }
         }
     }
 
@@ -46,10 +63,10 @@ public class FishCollectUI : MonoBehaviour
         isOpen = true;
         fishStats = fish;
         gameObject.SetActive(true);
-        UIManager.Instance.ChangeState(currentState.UI);
         fishName.text = fishStats.Name;
         fishWeight.text = $"{fishStats.Weight:F2} KGs";
-        fishSprite.sprite = fishStats.SpriteModel; 
+        fishValue.text = $"{fishStats.Value:F2} $";
+        fishSprite.sprite = fishStats.SpriteModel;
         Cursor.visible = true;
 
         // --- เพิ่มส่วนนี้ ---
@@ -63,6 +80,7 @@ public class FishCollectUI : MonoBehaviour
     /// <summary>
     /// ฟังก์ชันใหม่: สำหรับให้ปุ่ม "ถ่ายรูป" เรียกใช้
     /// </summary>
+    /*
     public void OnClick_TakePhoto()
     {
         if (fishStats == null) return; // ป้องกัน Error
@@ -98,7 +116,7 @@ public class FishCollectUI : MonoBehaviour
         SaveManager.Instance.SaveGame(GameSession.Instance.CurrentSlotId);
         PickUpFish();
     }
-
+*/
     /// <summary>
     /// ฟังก์ชันสำหรับปุ่ม "เก็บปลา" (Pick Up)
     /// </summary>
@@ -137,7 +155,7 @@ public class FishCollectUI : MonoBehaviour
     // -------------------------------------------------------------------
     // ฟังก์ชันสำหรับถ่ายรูป (เหมือนเดิม แต่ตอนนี้เป็น private)
     // -------------------------------------------------------------------
-
+/*
     private string TakeFishPhotoAndSave(GameObject fishPrefab)
     {
         // 1. ตรวจสอบว่าระบบพร้อมหรือไม่
@@ -210,5 +228,5 @@ public class FishCollectUI : MonoBehaviour
         {
             SetLayerRecursively(child.gameObject, layer);
         }
-    }
+    }*/
 }
