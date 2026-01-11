@@ -21,6 +21,7 @@ public class MinigameFishReel : MonoBehaviour
     [Header("Minigame State")] 
     [SerializeField] private bool isFishCalm = true;
     [SerializeField] private Image statusIndicator;
+    [SerializeField] private Color statusIndicatorColor;
     
     private List<BaseFish.movementPattern> movementPatterns;
     private bool isGameActive = false;
@@ -78,6 +79,9 @@ public class MinigameFishReel : MonoBehaviour
         {
             LoseGame();
         }
+        
+        Inventory.Instance.CurrentRod.GetBaitTransform().GetComponent<LineRenderer>().SetColors(statusIndicatorColor, statusIndicatorColor);
+        
     }
 
     private IEnumerator FishMovementSequence()
@@ -109,7 +113,8 @@ public class MinigameFishReel : MonoBehaviour
 
     private void UpdateIndicator(Color color)
     {
-        if (statusIndicator != null) statusIndicator.color = color;
+        statusIndicatorColor = color;
+        if (statusIndicator != null) statusIndicator.color = statusIndicatorColor;
     }
 
     private void WinGame()
@@ -120,6 +125,8 @@ public class MinigameFishReel : MonoBehaviour
         
         Inventory.Instance.CurrentRod.BeginRecall(); 
         Destroy(gameObject);
+        Inventory.Instance.CurrentRod.GetBaitTransform().GetComponent<LineRenderer>().SetColors(statusIndicatorColor, statusIndicatorColor);
+        
     }
 
     private void LoseGame()
@@ -130,5 +137,7 @@ public class MinigameFishReel : MonoBehaviour
         
         Inventory.Instance.CurrentRod.ObtainFish(null); 
         Destroy(gameObject);
+        Inventory.Instance.CurrentRod.GetBaitTransform().GetComponent<LineRenderer>().SetColors(statusIndicatorColor, statusIndicatorColor);
+        
     }
 }

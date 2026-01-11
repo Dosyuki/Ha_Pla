@@ -81,15 +81,27 @@ public class FishingRod : BaseItem
             return;
 
         // Start charging
-        if (Input.GetMouseButtonDown(0) && !isThrown && (Inventory.Instance.currentBait != null))
+        if (Input.GetMouseButtonDown(0) && !isThrown)
         {
-            if (Inventory.Instance.currentBait.amount > 0)
+            // 2. เช็คว่า "มีตัวเหยื่อถูกเลือกอยู่ไหม" (กัน Error NullReference)
+            if (Inventory.Instance.currentBait != null)
             {
-                StartCharging();
-                Inventory.Instance.currentBait.amount--;
+                // 3. ถ้ามีเหยื่อ -> เช็คจำนวนว่าเหลือพอมั้ย
+                if (Inventory.Instance.currentBait.amount > 0)
+                {
+                    // มีของครบ -> เริ่มตกปลา
+                    StartCharging();
+                    Inventory.Instance.currentBait.amount--;
+                }
+                else
+                {
+                    // มีตัวเหยื่อ แต่จำนวนเป็น 0 -> แจ้งเตือน
+                    UIAlert.Instance.FishWarning();
+                }
             }
             else
             {
+                // ไม่มีเหยื่อถูกเลือกเลย (currentBait เป็น null) -> แจ้งเตือน
                 UIAlert.Instance.FishWarning();
             }
         }
