@@ -54,11 +54,13 @@ public class UIManager : Singleton<UIManager>
         return true;
     }
     public currentState GetCurrentState() => m_currentState;
-    public void ToggleCanvasGroup(CanvasGroup canvasGroup, bool Show)
+    public void ToggleCanvasGroup(CanvasGroup canvasGroup, bool show)
     {
-        canvasGroup.interactable = Show;
-        canvasGroup.blocksRaycasts = Show;
-        canvasGroup.alpha = Show ? 1 : 0;
+        canvasGroup.interactable = show;
+        canvasGroup.blocksRaycasts = show;
+        canvasGroup.alpha = show ? 1 : 0;
+        m_currentState = show ? currentState.UI : currentState.None;
+        Debug.Log(canvasGroup.name + show);
     }
 }
 
