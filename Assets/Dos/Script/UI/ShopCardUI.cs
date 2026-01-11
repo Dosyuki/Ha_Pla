@@ -8,67 +8,64 @@ using UnityEngine.UI;
 
 public class ShopCardUI : MonoBehaviour , IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private BaseBait baseBait;
+    [Header("Data")]
+    private BaseBait _baseBait;
+    private int _currentAmount = 0; // เริ่มต้นที่ 0 (ถ้าจะซื้อต้องกด +)
+
+    [Header("UI Components")]
+    [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text pricePerUnitText; // ราคาต่อชิ้น
+    [SerializeField] private TMP_Text amountText;       // จำนวนที่เลือก
+
+    [Header("Buttons")]
+    [SerializeField] private Button plusButton;
+    [SerializeField] private Button minusButton;
     
-    [SerializeField] private Image image;
-    [SerializeField] private TMP_Text NameText;
-    [SerializeField] private TMP_Text ValueText;
-    [SerializeField] private TMP_Text BuyAmountText;
 
-    private bool isRepeatClicking =  false;
-    private int comboBuy = 0;
-    private float Timer = 1f;
-    private float curTime = 0;
+    public void Setup(BaseBait bait)
+    {
+        _baseBait = bait;
+        _currentAmount = 0; // รีเซ็ตเป็น 0
+
+        iconImage.sprite = bait.Sprite;
+        nameText.text = bait.Name;
+        pricePerUnitText.text = $"{bait.Value} $/pc";
+
+        // ผูกปุ่ม
+        plusButton.onClick.RemoveAllListeners();
+        minusButton.onClick.RemoveAllListeners();
+        
+        plusButton.onClick.AddListener(() => ChangeAmount(1));
+        minusButton.onClick.AddListener(() => ChangeAmount(-1));
+
+        UpdateDisplay();
+    }
+
+    private void ChangeAmount(int change)
+    {
+        _currentAmount += change;
+        if (_currentAmount < 0) _currentAmount = 0; // ห้ามติดลบ
+
+        UpdateDisplay();
+    }
+
+    private void UpdateDisplay()
+    {
+        amountText.text = _currentAmount.ToString();
+    }
     
-
-    public void UpdateUI(BaseBait bait)
-    {
-        baseBait = bait;
-        image.sprite = baseBait.Sprite;
-        NameText.text = baseBait.Name;
-        ValueText.text = ((int)baseBait.Value).ToString() + "$";
-    }
-
-    public void Clicked()
-    {
-        if(PlayerStats.Instance.GetMoney() - baseBait.Value < 0)
-            return;
-        PlayerStats.Instance.RemoveMoney(baseBait.Value);
-        InventoryUI.Instance.UpdateText();
-        Inventory.Instance.AddBait(baseBait,1);
-        
-        BaitInventoryPanel.Instance.CloseBaitUI();
-        BaitInventoryPanel.Instance.OpenBaitUI();
-        
-        Debug.Log(baseBait.Name + " " + baseBait.Value);
-        isRepeatClicking = true;
-        comboBuy++;
-        curTime = 0;
-    }
-
-    private void Update()
-    {
-        if(!isRepeatClicking)
-            return;
-        curTime += Time.deltaTime;
-        if (curTime <= Timer)
-        {
-            BuyAmountText.text = comboBuy.ToString();
-        }
-        else
-        {
-            BuyAmountText.text = string.Empty;
-            isRepeatClicking = false;
-            comboBuy = 0;
-        }
-    }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        BaitTooltip.Instance.Show(baseBait.Description);
+        BaitTooltip.Instance.Show(_baseBait.Description);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         BaitTooltip.Instance.Hide();
     }
+    // --- ฟังก์ชันสำหรับให้ ShopUI (ตัวแม่) ดึงข้อมูล ---
+    public BaseBait GetBait() => _baseBait;
+    public int GetAmount() => _currentAmount;
+    public float GetTotalCost() => _baseBait.Value * _currentAmount;
 }

@@ -19822,6 +19822,9 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 1024
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 0
   countdownText: {fileID: 1462749673}
   fadeText: {fileID: 760134413}
   fadeScreen: {fileID: 1019767907}
