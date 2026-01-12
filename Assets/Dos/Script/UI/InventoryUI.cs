@@ -19,8 +19,8 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] public CanvasGroup characterGroup;
     
     private CanvasGroup canvasGroup;
-    private bool isOpen = false;
-    private InventorySource inventorySource;
+    private InventorySource inventorySource = InventorySource.Shop;
+    public bool isOpen = false;
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
@@ -66,10 +66,10 @@ public class InventoryUI : Singleton<InventoryUI>
         {
             CardInventoryUI cardUI = Instantiate(fishCardPrefab, fishCardHolder).GetComponent<CardInventoryUI>();
             cardUI.UpdateCardUI(fish);
-            if(openFromShip)
-                cardUI.GetComponent<Button>().enabled = false;
-            else
-                cardUI.GetComponent<Button>().enabled = true;
+            //if(openFromShip)
+            //    cardUI.GetComponent<Button>().enabled = false;
+            //else
+            //    cardUI.GetComponent<Button>().enabled = true;
             index++;
         }
     }

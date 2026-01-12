@@ -10,17 +10,21 @@ public class CardInventoryUI : MonoBehaviour
     [SerializeField] private TMP_Text weight;
     [SerializeField] private TMP_Text value;
     [SerializeField] private TMP_Text name;
+    [SerializeField] private TMP_Text description;
     [SerializeField] public Sprite normalSprite;
     [SerializeField] public Sprite selectedSprite;
     [SerializeField] public Image bgImage;
+    [SerializeField] public GameObject InfoBox;
 
     public bool selected;
+    private bool showInfo;
     public void UpdateCardUI(Fish fish)
     {
         baseFish = fish;
         sprite.sprite = baseFish.SpriteModel;
         weight.text = $"{baseFish.Weight:F2} KG";
         value.text = $"{baseFish.CalculateValue():F2} Fishlars";
+        description.text = $"{baseFish.Description}";
         name.text = baseFish.Name;
         if (bgImage != null)
         {
@@ -31,17 +35,23 @@ public class CardInventoryUI : MonoBehaviour
     public void OnClick()
     {
         Debug.Log("Clicked On " + baseFish.Name);
-        if(!ShopManager.Instance.GetIsOpen())
-            return;
-        if (!selected)
+        if (ShopManager.Instance.GetIsOpen())
         {
-            ShopManager.Instance.AddSelectedFish(baseFish);
-            SetSelectionVisual(true); 
+            if (!selected)
+            {
+                ShopManager.Instance.AddSelectedFish(baseFish);
+                SetSelectionVisual(true); 
+            }
+            else
+            {
+                ShopManager.Instance.RemoveSelectedFish(baseFish);
+                SetSelectionVisual(false);
+            }
         }
-        else
+        else if (InventoryUI.Instance.isOpen)
         {
-            ShopManager.Instance.RemoveSelectedFish(baseFish);
-            SetSelectionVisual(false);
+            showInfo = !showInfo;
+            InfoBox.SetActive(showInfo);
         }
     }
     public void SetSelectionVisual(bool isSelected)
