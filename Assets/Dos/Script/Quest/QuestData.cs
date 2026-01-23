@@ -13,9 +13,8 @@ public class QuestData : ScriptableObject
 
     [Header("Rewards")]
     public float moneyReward;
-    // public ItemData itemReward; // ใส่เพิ่มได้ถ้ามีระบบ Item
+    // public ItemData itemReward;
 
-    // ฟังก์ชันเช็คว่าปลาตัวนี้ "เข้าข่าย" ที่จะโชว์ใน Filter ไหม
     public bool IsFishCompatible(Fish fish)
     {
         foreach (var req in requirements)
@@ -33,24 +32,20 @@ public class QuestRequirement
     public RequirementType type;
 
     [Header("Conditions")]
-    public BaseFish specificFish; // เจาะจงพันธุ์
-    public FishRarity requiredRarity; // เจาะจงระดับ
-    public float minWeight = 0; // ** เพิ่มเงื่อนไขน้ำหนัก (0 = ไม่สน) **
+    public BaseFish specificFish; 
+    public FishRarity requiredRarity;
+    public float minWeight = 0;
 
     [Header("Amount")]
     public int amountRequired = 1;
 
-    // Logic ตรวจสอบเงื่อนไข
     public bool IsMatch(Fish fish)
     {
-        // 1. เช็ค Weight ก่อนเลย (ถ้าตั้งไว้ > 0)
         if (minWeight > 0 && fish.Weight < minWeight) return false;
 
-        // 2. เช็คตามประเภท
         switch (type)
         {
             case RequirementType.SpecificFish:
-                // เช็คชื่อ หรือ BaseFish Reference
                 return fish.Name == specificFish.Name;
                 
             case RequirementType.RarityOnly:

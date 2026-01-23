@@ -40,10 +40,10 @@ public class QuestUIManager : Singleton<QuestUIManager>
     // --- DIALOGUE SYSTEM ---
     public void StartDialogue(DialogueData data)
     {
-        currentActiveQuest = data.questToOpen; // เตรียมเควสไว้ (ถ้ามี)
+        currentActiveQuest = data.questToOpen;
         
         dialoguePanel.SetActive(true);
-        questPanel.SetActive(false); // ปิดหน้าเควสไปก่อน
+        questPanel.SetActive(false);
         
         speakerNameText.text = data.speakerName;
         sentencesQueue.Clear();
@@ -72,7 +72,6 @@ public class QuestUIManager : Singleton<QuestUIManager>
     {
         dialoguePanel.SetActive(false);
         UIManager.Instance.ChangeState(currentState.None);
-        // ถ้าคุยจบแล้วมีเควสแนบมา -> เปิดหน้าเควสต่อเลย
         if (currentActiveQuest != null)
         {
             OpenQuestWindow(currentActiveQuest);
@@ -95,14 +94,11 @@ public class QuestUIManager : Singleton<QuestUIManager>
 
     private void RefreshFilteredInventory()
     {
-        // ล้าง Slot เก่า
         foreach (var obj in currentSlotObjs) Destroy(obj);
         currentSlotObjs.Clear();
 
-        // ดึงปลาทั้งหมด
-        List<Fish> allFish = Inventory.Instance.GetAllFish(); // ปรับตามตัวแปรจริงของคุณ
+        List<Fish> allFish = Inventory.Instance.GetAllFish();
 
-        // Filter: เอาเฉพาะปลาที่เข้าข่ายเงื่อนไขใดเงื่อนไขหนึ่ง
         foreach (Fish fish in allFish)
         {
             if (currentActiveQuest.IsFishCompatible(fish))
@@ -116,14 +112,12 @@ public class QuestUIManager : Singleton<QuestUIManager>
     {
         GameObject newSlot = Instantiate(fishSlotPrefab, slotsParent);
         
-        // Setup UI (รูป, ชื่อ, น้ำหนัก)
-        // สมมติว่า CardInventoryUI มีฟังก์ชัน Setup ง่ายๆ
+       
         CardInventoryUI ui = newSlot.GetComponent<CardInventoryUI>();
         if(ui != null) ui.UpdateCardUI(fish);
 
-        // เพิ่มปุ่มกดเลือก (Overlay Button)
-        Button btn = newSlot.GetComponent<Button>(); // หรือ Child Button
-        Image bg = newSlot.GetComponent<Image>();    // หรือ Child Image
+        Button btn = newSlot.GetComponent<Button>(); 
+        Image bg = newSlot.GetComponent<Image>(); 
         
         btn.onClick.AddListener(() => 
         {
@@ -138,12 +132,12 @@ public class QuestUIManager : Singleton<QuestUIManager>
         if (selectedFish.Contains(fish))
         {
             selectedFish.Remove(fish);
-            bgImage.color = Color.white; // สีปกติ
+            bgImage.color = Color.white;
         }
         else
         {
             selectedFish.Add(fish);
-            bgImage.color = Color.green; // สีตอนเลือก
+            bgImage.color = Color.green;
         }
         
         UpdateRequirementText();
@@ -152,19 +146,15 @@ public class QuestUIManager : Singleton<QuestUIManager>
 
     private void CheckSubmitButton()
     {
-        // ปุ่มกดได้ก็ต่อเมื่อ เลือกครบตามจำนวนที่ต้องการเป๊ะๆ หรือ มากกว่า
-        // (Logic จริงซับซ้อนกว่านี้ แต่เอาพื้นฐานก่อน)
+     
         submitButton.interactable = ValidateSelection();
     }
 
-    // Logic ตรวจสอบว่าปลาที่เลือกมา ครบตาม Quest Requirement หรือไม่
     private bool ValidateSelection()
     {
-        // Clone Requirements มาเพื่อทดลองหักลบ
         List<QuestRequirement> tempReqs = new List<QuestRequirement>();
         foreach(var r in currentActiveQuest.requirements)
         {
-            // Copy data to temp object
             QuestRequirement temp = new QuestRequirement();
             temp.type = r.type;
             temp.specificFish = r.specificFish;
@@ -174,7 +164,6 @@ public class QuestUIManager : Singleton<QuestUIManager>
             tempReqs.Add(temp);
         }
 
-        // วนลูปปลาที่เลือกไว้ ตัดยอดออกจาก Requirement
         foreach (Fish fish in selectedFish)
         {
             bool matched = false;
@@ -184,12 +173,11 @@ public class QuestUIManager : Singleton<QuestUIManager>
                 {
                     req.amountRequired--;
                     matched = true;
-                    break; // ปลา 1 ตัว ใช้ได้กับ 1 requirement เท่านั้น
+                    break;
                 }
             }
         }
 
-        // ถ้าทุก requirement เหลือ 0 แสดงว่าครบ
         foreach (var req in tempReqs)
         {
             if (req.amountRequired > 0) return false;
@@ -214,10 +202,8 @@ public class QuestUIManager : Singleton<QuestUIManager>
     {
         if (!ValidateSelection()) return;
 
-        // ลบปลาออกจาก Inventory จริง
         foreach (Fish f in selectedFish)
         {
-            // เรียกฟังก์ชันลบปลาของคุณ
             Inventory.Instance.RemoveFish(f); 
         }
 

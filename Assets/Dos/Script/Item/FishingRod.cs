@@ -63,8 +63,8 @@ public class FishingRod : BaseItem
         lineRenderer = bait.GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
         lineRenderer.positionCount = 20;
-        lineRenderer.startWidth = 0.01f;
-        lineRenderer.endWidth = 0.01f;
+        lineRenderer.startWidth = 0.03f;
+        lineRenderer.endWidth = 0.05f;
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.receiveShadows = false;
         

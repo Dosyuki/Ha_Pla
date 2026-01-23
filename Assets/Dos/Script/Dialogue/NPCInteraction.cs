@@ -5,7 +5,7 @@ using UnityEngine;
 public class NPCInteraction : MonoBehaviour
 {
     [Header("Configuration")]
-    [SerializeField] private DialogueData dialogueData; // ลาก Dialogue SO มาใส่
+    [SerializeField] private DialogueData dialogueData; 
 
     private bool isInRange = false;
 
@@ -20,7 +20,6 @@ public class NPCInteraction : MonoBehaviour
         
     }
 
-    // ฟังก์ชันนี้เรียกเมื่อ Player เดินไปกด E หรือคลิกใส่ NPC
     public void Interact()
     {
         if (dialogueData != null)

@@ -6,11 +6,11 @@ public class DialogueData : ScriptableObject
 {
     [Header("Speaker")]
     public string speakerName;
-    public Sprite portrait; // รูปคนพูด (ถ้ามี)
+    //public Sprite portrait; 
 
     [Header("Lines")]
     [TextArea] public List<string> sentences;
 
     [Header("Action After Dialogue")]
-    public QuestData questToOpen; // คุยจบแล้วให้เปิดเควสไหน (ถ้าไม่มี = ปิดเฉยๆ)
+    public QuestData questToOpen; 
 }

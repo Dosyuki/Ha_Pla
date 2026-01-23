@@ -24,11 +24,12 @@ public class CardInventoryUI : MonoBehaviour
         sprite.sprite = baseFish.SpriteModel;
         weight.text = $"{baseFish.Weight:F2} KG";
         value.text = $"{baseFish.CalculateValue():F2} Fishlars";
-        description.text = $"{baseFish.Description}";
+        if(description != null)
+            description.text = $"{baseFish.Description}";
         name.text = baseFish.Name;
         if (bgImage != null)
         {
-            bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, selected);
+            //bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, selected);
         }
     }
 
@@ -48,7 +49,7 @@ public class CardInventoryUI : MonoBehaviour
                 SetSelectionVisual(false);
             }
         }
-        else if (InventoryUI.Instance.isOpen)
+        else if (InventoryUI.Instance.isOpen && InfoBox != null)
         {
             showInfo = !showInfo;
             InfoBox.SetActive(showInfo);
@@ -58,7 +59,7 @@ public class CardInventoryUI : MonoBehaviour
     {
         if (bgImage != null)
         {
-            bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, isSelected);
+            //bgImage.sprite = CardInventoryManager.Instance.getSprite(baseFish.Rarity, isSelected);
         }
         selected = isSelected;
     }
