@@ -1,30 +1,53 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// สร้าง Struct เพื่อเก็บข้อมูลแยกแต่ละโซน
+[System.Serializable]
+public struct FishingZone
+{
+    public string ZoneName;        // ชื่อโซน (เช่น Zone A, Zone B)
+    public LayerMask WaterLayer;   // Layer ของน้ำในโซนนี้
+    public List<BaseFish> FishPool;// รายชื่อปลาที่ตกได้ในโซนนี้
+}
+
 public class FishManager : Singleton<FishManager>
 {
-    public List<BaseFish> fishPrefabsRedZone;
+    [Header("Fishing Zones Setup")]
+    public List<FishingZone> fishingZones = new List<FishingZone>(); // แทนที่ fishPrefabsRedZone เดิม
+
     private Dictionary<string, BaseFish> fishLookup;
+
     protected void Awake()
     {
         BuildLookupDictionary();
     }
-    public Fish RandomFish(float luckMultiplier = 1f, float weightMultiplier = 1f, float thrownLuck = 1f, Bait bait = null)
-    {
-        float totalChance = 0f;
 
-        // รวมโอกาสสุ่ม โดยใช้ LuckMultiplier ช่วยเพิ่มโอกาสปลาหายาก
+    // --- เพิ่ม Parameter waterLayerIndex เข้ามา ---
+    public Fish RandomFish(int waterLayerIndex, float luckMultiplier = 1f, float weightMultiplier = 1f, float thrownLuck = 1f, Bait bait = null)
+    {
+        // 1. หา Pool ปลาจาก Layer ที่ส่งมา
+        List<BaseFish> currentPool = GetPoolByLayer(waterLayerIndex);
+
+        // ป้องกัน Error ถ้าหา Pool ไม่เจอ
+        if (currentPool == null || currentPool.Count == 0)
+        {
+            Debug.LogError("No fish pool found for this layer!");
+            return null;
+        }
+
+        float totalChance = 0f;
         Dictionary<BaseFish, float> adjustedChances = new Dictionary<BaseFish, float>();
-        float newLuckMultipier = luckMultiplier + bait.LuckMultiplier +  thrownLuck;
-        foreach (var fish in fishPrefabsRedZone)
+        float newLuckMultipier = luckMultiplier + bait.LuckMultiplier + thrownLuck;
+
+        // 2. ลูปสุ่มเฉพาะปลาใน currentPool
+        foreach (var fish in currentPool)
         {
             float adjustedChance = fish.DropChance;
 
-            // ถ้าปลามี Rarity สูง → ให้ LuckMultiplier มีผลมากขึ้น
             switch (fish.Rarity)
             {
                 case FishRarity.Basic:
-                    adjustedChance *= 1f; // Luck ไม่ช่วยปลาธรรมดา
+                    adjustedChance *= 1f;
                     break;
                 case FishRarity.Rare:
                     adjustedChance *= Mathf.Lerp(1f, newLuckMultipier, 0.6f);
@@ -41,7 +64,6 @@ public class FishManager : Singleton<FishManager>
             totalChance += adjustedChance;
         }
 
-        // ทอยลูกเต๋า
         float roll = Random.Range(0, totalChance);
         float cumulative = 0f;
 
@@ -55,22 +77,43 @@ public class FishManager : Singleton<FishManager>
         }
 
         // fallback
-        return new Fish(fishPrefabsRedZone[0], luckMultiplier, weightMultiplier, bait);
+        return new Fish(currentPool[0], luckMultiplier, weightMultiplier, bait);
     }
+
+    // ฟังก์ชันเช็คว่า Layer ที่ตกน้ำไป ตรงกับ Zone ไหน
+    private List<BaseFish> GetPoolByLayer(int layerIndex)
+    {
+        foreach (var zone in fishingZones)
+        {
+            // เช็คว่า layerIndex อยู่ใน LayerMask ของ Zone นี้หรือไม่
+            if ((zone.WaterLayer.value & (1 << layerIndex)) != 0)
+            {
+                return zone.FishPool;
+            }
+        }
+        
+        // ถ้าหาไม่เจอจริงๆ ให้คืนค่าโซนแรก (Fallback)
+        if (fishingZones.Count > 0) return fishingZones[0].FishPool;
+        return null;
+    }
+
     private void BuildLookupDictionary()
     {
         fishLookup = new Dictionary<string, BaseFish>();
         
-        // (คุณอาจต้องรวมปลาจากทุก Zone ที่นี่)
-        foreach (BaseFish fish in fishPrefabsRedZone)
+        // ต้องลูปเอาปลาจาก "ทุกโซน" มาใส่ Dictionary ให้หมด เผื่อตอน Load Save
+        foreach (var zone in fishingZones)
         {
-            if (fish != null && !fishLookup.ContainsKey(fish.Name))
+            foreach (BaseFish fish in zone.FishPool)
             {
-                fishLookup.Add(fish.Name, fish);
+                if (fish != null && !fishLookup.ContainsKey(fish.Name))
+                {
+                    fishLookup.Add(fish.Name, fish);
+                }
             }
         }
-        // ... (เพิ่ม List ปลาจากโซนอื่น) ...
     }
+
     public BaseFish GetBaseFishByName(string name)
     {
         if (string.IsNullOrEmpty(name)) return null;

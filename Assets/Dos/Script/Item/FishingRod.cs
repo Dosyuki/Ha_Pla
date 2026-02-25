@@ -239,20 +239,26 @@ public class FishingRod : BaseItem
 
     private void FishingHook()
     {
-        if (!waitingForFish && !isRecalling && Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer).Length > 0)
+        // เช็คว่ามีอะไรอยู่ในระยะไหม
+        Collider[] hits = Physics.OverlapSphere(baitTransform.position, 0.6f, FishingLayer);
+
+        if (!waitingForFish && !isRecalling && hits.Length > 0)
         {
-            // --- แก้ไข: เก็บ Coroutine ไว้ในตัวแปร ---
-            waitFishCoroutine = StartCoroutine(WaitForFish());
+            // ดึง Layer ของน้ำก้อนแรกที่เหยื่อชน
+            int hitWaterLayer = hits[0].gameObject.layer; 
+
+            // ส่ง Layer เข้าไปใน Coroutine
+            waitFishCoroutine = StartCoroutine(WaitForFish(hitWaterLayer));
         }
     }
 
-    IEnumerator WaitForFish()
+    // รับ parameter hitWaterLayer เข้ามา
+    IEnumerator WaitForFish(int hitWaterLayer)
     {
         waitingForFish = true; 
         float randomTime = Random.Range(2f, 3f);
         yield return new WaitForSeconds(randomTime);
         
-        // --- แก้ไข: Checkpoint 1 ถ้าเบ็ดถูกเก็บไปแล้ว ให้ยกเลิก ---
         if (!isThrown) 
         {
             waitingForFish = false;
@@ -262,24 +268,23 @@ public class FishingRod : BaseItem
         bait.isKinematic = true;
         if(minigame == null)
         {
-             var director = GameObject.Find("FishAlert")?.GetComponent<PlayableDirector>();
-             if(director != null) director.Play();
+            var director = GameObject.Find("FishAlert")?.GetComponent<PlayableDirector>();
+            if(director != null) director.Play();
         }
             
         yield return new WaitForSeconds(1.5f);
         
-        // --- แก้ไข: Checkpoint 2 เช็ค isThrown อีกรอบก่อนเริ่มมินิเกม ---
         if (minigame == null && !isRecalling && isDoneMinigame && isThrown)
         {
-            Fish caughtFish = FishManager.Instance.RandomFish(LuckMultiplier, WeightMultiplier,thrownMultipier,Inventory.Instance.currentBait);
+            // ส่ง hitWaterLayer ไปให้ FishManager
+            Fish caughtFish = FishManager.Instance.RandomFish(hitWaterLayer, LuckMultiplier, WeightMultiplier, thrownMultipier, Inventory.Instance.currentBait);
+            
             currentFish = caughtFish;
             minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
             minigame.GetComponent<MinigameFishReel>().SetupFish(currentFish);
             isDoneMinigame = false;
             
             Debug.Log("Start Playing Minigame");
-            
-            // ล็อกผู้เล่นเฉพาะตอนเริ่มมินิเกมจริงๆ
             playerController.enabled = false;
         }
             

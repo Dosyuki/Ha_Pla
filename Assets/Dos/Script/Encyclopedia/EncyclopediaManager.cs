@@ -14,7 +14,7 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
     // ฟังก์ชันนี้จะทำงานหลังจาก Awake() ของทุกสคริปต์
     private void Start()
     {
-        InitializeDatabase();
+        //InitializeDatabase();
     }
 
     private void InitializeDatabase()
@@ -22,9 +22,9 @@ public class EncyclopediaManager : Singleton<EncyclopediaManager>
         if (isInitialized) return;
 
         entryDatabase = new Dictionary<string, EncyclopediaEntry>();
-        
-        
-        List<BaseFish> allZoneAFish = FishManager.Instance.fishPrefabsRedZone;
+
+
+        List<BaseFish> allZoneAFish = null;//FishManager.Instance.fishPrefabsRedZone;
 
         if (allZoneAFish == null)
         {
