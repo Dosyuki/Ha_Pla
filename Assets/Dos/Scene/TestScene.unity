@@ -6647,7 +6647,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!135 &459261631
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9825,7 +9825,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -25.072876, y: 17.281006}
+  m_AnchoredPosition: {x: -25.072754, y: 17.281006}
   m_SizeDelta: {x: 96.496, y: 34.563}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &649445779
