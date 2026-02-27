@@ -280,7 +280,7 @@ public class FishingRod : BaseItem
             Fish caughtFish = FishManager.Instance.RandomFish(hitWaterLayer, LuckMultiplier, WeightMultiplier, thrownMultipier, Inventory.Instance.currentBait);
             
             currentFish = caughtFish;
-            minigame = Instantiate(newMinigame,GameObject.Find("UICanvas").transform);
+            minigame = Instantiate(newMinigame,GameObject.Find("MinigameCanvas").transform);
             minigame.GetComponent<MinigameFishReel>().SetupFish(currentFish);
             isDoneMinigame = false;
             

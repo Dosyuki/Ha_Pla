@@ -22,8 +22,17 @@ public class MinigameFishReel : MonoBehaviour
     [SerializeField] private bool isFishCalm = true;
     [SerializeField] private Image statusIndicator;
     [SerializeField] private Color statusIndicatorColor;
+
+    [Header("UI Customization")] 
+    [SerializeField] private Sprite fishCalmSprite;
+    [SerializeField] private Sprite fishDashSprite;
+    [SerializeField] private Image fishImage;
+    [SerializeField] private GameObject NormalRod;
+    [SerializeField] private GameObject ReelRod;
+    
     
     private List<BaseFish.movementPattern> movementPatterns;
+    private UIJiggle JiggleFish;
     private bool isGameActive = false;
 
     void Start()
@@ -31,8 +40,7 @@ public class MinigameFishReel : MonoBehaviour
         progressBar.minValue = min;
         progressBar.maxValue = max;
         progressBar.value = startValue;
-        
-
+        JiggleFish = GetComponentInChildren<UIJiggle>();
     }
 
     public void SetupFish(Fish fish)
@@ -51,37 +59,45 @@ public class MinigameFishReel : MonoBehaviour
 
         bool isPressing = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0);
 
-        if (isPressing)
+        if (isFishCalm) // --- ช่วงปลาสงบ (สีเขียว/เหลือง) ---
         {
-            if (isFishCalm)
+            if (isPressing)
             {
-                // ปลาเหนื่อย + กดดึง = ได้แต้ม
+                // ดึงเข้าหาตัว
                 progressBar.value += reelPower * Time.deltaTime;
             }
             else
             {
-                // ปลาดิ้น + ดันทุรังกด = เสียแต้มเยอะ (สายจะขาด)
-                progressBar.value -= penaltyDropSpeed * Time.deltaTime;
+                // ปล่อยไว้เฉยๆ ค่าลดลงนิดหน่อยตามแรงน้ำ
+                progressBar.value -= tensionDropSpeed * Time.deltaTime;
             }
+            JiggleFish.StopShake();
         }
-        else
+        else // --- ช่วงปลาแง้น/ดิ้น (สีแดง) ---
         {
-            // ไม่กดอะไรเลย = แต้มลดลงเรื่อยๆ ตามธรรมชาติ
-            progressBar.value -= tensionDropSpeed * Time.deltaTime;
-        }
-
-        // 3. เช็คชนะ / แพ้
-        if (progressBar.value >= max)
-        {
-            WinGame();
-        }
-        else if (progressBar.value <= min)
-        {
-            LoseGame();
+            // ปลาว่ายหนี "ตลอดเวลา" (ใช้ค่าความเร็วปลามาช่วยให้แต่ละตัวแง้นไวไม่เท่ากันได้)
+            float fishRunSpeed = tensionDropSpeed * 2f; 
+            
+            if (isPressing)
+            {
+                // ถ้าฝืนดึงตอนปลาแง้น = แง้นออกไปไวขึ้นมหาศาล (Penalty)
+                progressBar.value -= (fishRunSpeed + penaltyDropSpeed) * Time.deltaTime;
+            }
+            else
+            {
+                // ปล่อยมือเฉยๆ ปลาก็ยังแง้นหนีออกไปอยู่ดี
+                progressBar.value -= fishRunSpeed * Time.deltaTime;
+            }
+            JiggleFish.StartShake();
         }
         
+        // --- ส่วนที่เหลือเหมือนเดิม ---
+        if (progressBar.value >= max) WinGame();
+        else if (progressBar.value <= min) LoseGame();
+        
+        UpdateRodSprite(isPressing);
+        UpdateFishSprite();
         Inventory.Instance.CurrentRod.GetBaitTransform().GetComponent<LineRenderer>().SetColors(statusIndicatorColor, statusIndicatorColor);
-        
     }
 
     private IEnumerator FishMovementSequence()
@@ -139,5 +155,15 @@ public class MinigameFishReel : MonoBehaviour
         Destroy(gameObject);
         Inventory.Instance.CurrentRod.GetBaitTransform().GetComponent<LineRenderer>().SetColors(statusIndicatorColor, statusIndicatorColor);
         
+    }
+
+    private void UpdateFishSprite()
+    {
+        fishImage.sprite = isFishCalm ?  fishCalmSprite : fishDashSprite;
+    }
+    private void UpdateRodSprite(bool isPressing)
+    {
+        NormalRod.SetActive(!isPressing);
+        ReelRod.SetActive(isPressing);
     }
 }
