@@ -18345,7 +18345,7 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 8
-  hitboxSize: 0.04
+  hitboxSize: 0.11
   offset: {x: 3.84, y: 2.82, z: 2.46}
   selectedFish: []
   isOpen: 0

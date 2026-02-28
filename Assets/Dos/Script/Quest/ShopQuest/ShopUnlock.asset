@@ -21,4 +21,4 @@ MonoBehaviour:
     minWeight: 1
     amountRequired: 2
   moneyReward: 0
-  isCompleted: 0
+  isCompleted: 1
