@@ -53,6 +53,7 @@ public class CardInventoryUI : MonoBehaviour
         {
             showInfo = !showInfo;
             InfoBox.SetActive(showInfo);
+            InventoryUI.Instance.SelectFish(baseFish);
         }
     }
     public void SetSelectionVisual(bool isSelected)

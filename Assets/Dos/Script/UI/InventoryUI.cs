@@ -12,6 +12,7 @@ public class InventoryUI : Singleton<InventoryUI>
     [SerializeField] private TMP_Text maxslotText;
     [SerializeField] private TMP_Text moneyText;
     [SerializeField] private TMP_Text upgradeCostText;
+    [SerializeField] private Button HoldFishButton;
     [SerializeField] private RectTransform fishScrollRect;
     [SerializeField] private RectTransform baitScrollRect;
 
@@ -20,10 +21,12 @@ public class InventoryUI : Singleton<InventoryUI>
     
     private CanvasGroup canvasGroup;
     private InventorySource inventorySource = InventorySource.Shop;
+    private Fish curFish;
     public bool isOpen = false;
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        HoldFishButton.onClick.AddListener(HoldAndUnholdFish);
     }
 
     private void Update()
@@ -36,11 +39,11 @@ public class InventoryUI : Singleton<InventoryUI>
         upgradeCostText.text = $"{cost:F2} to Upgrade";
     }
 
-    public void CreateCardUI(bool openFromShip)
+    public void CreateCardUI(bool openFromPlayer)
     {
         if(isOpen)
             return;
-        inventorySource = openFromShip ? InventorySource.Ship : InventorySource.Shop;
+        inventorySource = openFromPlayer ? InventorySource.Player : InventorySource.Shop;
         isOpen = true;
         UIManager.Instance.ChangeState(currentState.UI);
         int index = 0;
@@ -55,12 +58,13 @@ public class InventoryUI : Singleton<InventoryUI>
         fishScrollRect.anchoredPosition = new Vector2(0, -20);
         baitScrollRect.anchoredPosition = new Vector2(0, -20);
         
-        if (openFromShip)
+        if (openFromPlayer)
         {
             characterGroup.alpha = 1;
             characterGroup.interactable = true;
             characterGroup.blocksRaycasts = true;
         }
+        HoldFishButton.gameObject.SetActive(openFromPlayer);
         UpdateText();
         foreach (Fish fish in allFish)
         {
@@ -128,10 +132,37 @@ public class InventoryUI : Singleton<InventoryUI>
             }
         }
     }
+
+    public void HoldAndUnholdFish()
+    {
+        Transform holdPos = Inventory.Instance.gameObject.transform.Find("FishHoldParent");
+
+        if (curFish == null) return;
+        // Hold
+        if (holdPos.childCount == 0)
+        {
+            GameObject FishVisual = Instantiate(curFish.PrefabModel,holdPos.position, holdPos.rotation,holdPos);
+            FishVisual.transform.localScale *= curFish.GetSpawnSize();
+            HoldFishButton.GetComponentInChildren<TMP_Text>().text = "Unhold";
+        }
+        //Unhold
+        else if (holdPos.childCount != 0)
+        {
+            foreach (Transform child in holdPos.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            HoldFishButton.GetComponentInChildren<TMP_Text>().text = "Hold";
+        }
+    }
+    public void SelectFish(Fish selectedFish)
+    {
+        curFish = selectedFish;
+    }
 }
 public enum InventorySource
 {
     None,
     Shop,
-    Ship
+    Player
 }

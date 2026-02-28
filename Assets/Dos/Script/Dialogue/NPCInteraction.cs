@@ -1,11 +1,13 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NPCInteraction : MonoBehaviour
 {
     [Header("Configuration")]
-    [SerializeField] private DialogueData dialogueData; 
+    [SerializeField] private DialogueData lockedDialogue; 
+    [SerializeField] private UnityEvent onQuestDone;
 
     private bool isInRange = false;
 
@@ -13,7 +15,7 @@ public class NPCInteraction : MonoBehaviour
     {
         if (!isInRange)
             return;
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Interact();
         }
@@ -22,9 +24,15 @@ public class NPCInteraction : MonoBehaviour
 
     public void Interact()
     {
-        if (dialogueData != null)
+        if (lockedDialogue.questToOpen != null)
         {
-            QuestUIManager.Instance.StartDialogue(dialogueData);
+            if(!lockedDialogue.questToOpen.isQuestDone())
+                QuestUIManager.Instance.StartDialogue(lockedDialogue);
+            else if (lockedDialogue.questToOpen.isQuestDone())
+            {
+                onQuestDone.Invoke();
+                Debug.Log("Quest done, Try to Do  Something");
+            }
             UIManager.Instance.ChangeState(currentState.UI);
         }
     }

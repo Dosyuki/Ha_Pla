@@ -327,7 +327,7 @@ public class FishingRod : BaseItem
         if (currentFish.PrefabModel != null)
         {
             GameObject visualFish = Instantiate(currentFish.PrefabModel, baitTransform.position, Quaternion.identity, baitTransform);
-            
+            visualFish.transform.localScale *= currentFish.GetSpawnSize();
             Vector3 playerPos = PlayerStats.Instance.transform.position;
             Vector3 directionToPlayer = (playerPos - baitTransform.position).normalized;
             Vector3 horizontalDir = new Vector3(directionToPlayer.x, 0, directionToPlayer.z).normalized;

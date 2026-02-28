@@ -47,6 +47,7 @@ public class Fish
         Weight = Random.Range(minWeight, maxWeight);
     }
 
+    public float GetSpawnSize() => Weight / baseFish.Weight;
 
     public float CalculateValue()
     {

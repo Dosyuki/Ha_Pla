@@ -76,7 +76,7 @@ public class Inventory : Singleton<Inventory>
         if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) && isInventoryOpen)
         {
             // ปิด Inventory (ใช้ `InventorySource.Ship` เหมือนกับ `ShipStorage`)
-            InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+            InventoryUI.Instance.CloseCardUI(InventorySource.Player);
             isInventoryOpen = false;
             return; // จบการทำงานในเฟรมนี้
         }

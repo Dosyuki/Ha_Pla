@@ -32,18 +32,18 @@ public class ShopManager : Singleton<ShopManager>
         if (colliders.Length > 0)
         {
             shopUIGroup.alpha = 1;
+            /*
             if (Input.GetKeyDown(KeyCode.F))
             {
                 if (!isOpen)  // only open if not already open
                 {
                     isOpen = true;
-                    InventoryUI.Instance.CreateCardUI(false);
                     OpenShopUI();
                     return;
                     // DO NOT call UIManager.ChangeState here
                 }
-            }
-            if (isOpen && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F)))
+            }*/
+            if (isOpen && (Input.GetKeyDown(KeyCode.Escape)))
             {
                 isOpen = false;
                 InventoryUI.Instance.CloseCardUI(InventorySource.Shop);
@@ -86,6 +86,8 @@ public class ShopManager : Singleton<ShopManager>
 
     public void OpenShopUI()
     {
+        InventoryUI.Instance.CreateCardUI(false);
+        isOpen = true;
         shopUICanvasGroup.interactable = true;
         shopUICanvasGroup.alpha = 1;
         shopUICanvasGroup.blocksRaycasts = true;

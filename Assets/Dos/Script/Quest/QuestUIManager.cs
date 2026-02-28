@@ -208,6 +208,7 @@ public class QuestUIManager : Singleton<QuestUIManager>
         }
 
         Debug.Log("Quest Completed! Reward: " + currentActiveQuest.moneyReward);
+        currentActiveQuest.QuestDone();
         // PlayerStats.Instance.AddMoney(currentActiveQuest.moneyReward);
 
         questPanel.SetActive(false);

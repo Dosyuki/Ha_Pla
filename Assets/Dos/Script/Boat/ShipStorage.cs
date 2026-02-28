@@ -35,7 +35,7 @@ public class ShipStorage : MonoBehaviour
         if (InventoryUI.Instance.gameObject.activeInHierarchy && 
             (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Escape)))
         {
-            InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+            InventoryUI.Instance.CloseCardUI(InventorySource.Player);
         }
     }
 
@@ -57,7 +57,7 @@ public class ShipStorage : MonoBehaviour
 
             // auto-close inventory when leaving
             if (InventoryUI.Instance.gameObject.activeInHierarchy)
-                InventoryUI.Instance.CloseCardUI(InventorySource.Ship);
+                InventoryUI.Instance.CloseCardUI(InventorySource.Player);
         }
     }
 }

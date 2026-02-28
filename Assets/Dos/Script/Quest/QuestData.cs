@@ -14,7 +14,7 @@ public class QuestData : ScriptableObject
     [Header("Rewards")]
     public float moneyReward;
     // public ItemData itemReward;
-
+    public bool isCompleted;
     public bool IsFishCompatible(Fish fish)
     {
         foreach (var req in requirements)
@@ -23,6 +23,8 @@ public class QuestData : ScriptableObject
         }
         return false;
     }
+    public void QuestDone() => isCompleted = true;
+    public bool isQuestDone() => isCompleted;
 }
 
 [System.Serializable]
